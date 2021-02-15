@@ -7,12 +7,12 @@
 ## Optional
 * the command argument is found in `argv[0]` and converted to int using `parseInt` method
 * after the project is build, first go to the root of the `com` folder within the `out` folder 
-  than run the command `java -Xms4G -Xmx4G com.perosal.Main 3001`
+  then run the command `java -Xms4G -Xmx4G com.perosal.Main 3001`
 * the running time in ns for an input bigger than 50 is equal with the difference between the time from
 the end of the `Optional` function and the beginning of it
   
 ## Bonus
-* first a random graph is initialized then and to get the random tree, the `getPartialTree()` function
+* a random graph is initialized then to get the random tree, the `getPartialTree()` function si used
 and to show it as described, `showTree()` function is used. This function is efficient because it is based on DFS algorithm
   
 More explanations are given in the function definitions.
