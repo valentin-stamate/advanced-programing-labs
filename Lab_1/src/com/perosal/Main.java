@@ -55,22 +55,29 @@ public class Main {
             return;
         }
 
-        int[][] a = new int[n + 1][n + 1];
+        boolean[][] a = new boolean[n + 1][n + 1];
+
         initializeRandomGraph(a, n);
 
         if (n < 50) {
             showGraph(a, n);
         }
-        boolean b = connectedComponents(a, n);
-        System.out.println(b ? "\nGraph is connected" : "\nGraph is not connected");
+
+        boolean connected = connectedComponents(a, n);
+        System.out.println(connected ? "\nGraph is connected" : "\nGraph is not connected");
+
+        if (!connected) {
+            return;
+        }
 
         /* Step 2 */
 
-        int[][] partialTree = getPartialTree(a, n);
+        boolean[][] tree = new boolean[n + 1][n + 1];
+        getPartialTree(a, n, tree);
 
         if (n < 50) {
             System.out.println("\nPartial tree form a[][]:");
-            showGraph(partialTree, n);
+            showGraph(tree, n);
         }
 
         /* Step 3 */
@@ -82,20 +89,22 @@ public class Main {
 
         /* Step 4 */
         /* java -Xms4G -Xmx4G com.perosal.Main 30001 */
+        /* java -Xms8G -Xmx8G com.perosal.Main 30001 */
     }
 
     private static void Bonus() {
         System.out.println(" --== Bonus ==--");
         int n = ((int)(Math.random() * 1000000)) % 30 + 5;
 
-        int[][] a = new int[n + 1][n + 1];
+        boolean[][] a = new boolean[n + 1][n + 1];
         initializeRandomGraph(a, n);
 
-        a = getPartialTree(a, n);
+        boolean[][] tree = new boolean[n + 1][n + 1];
+        getPartialTree(a, n, tree);
 
         boolean[] visited = new boolean[n + 1];
 
-        showTree(1, a, n, 0, visited);
+        showTree(1, tree, n, 0, visited);
 
     }
 
@@ -103,7 +112,7 @@ public class Main {
      * For every node an empty string is concatenated based on the current level
      * Complexity: O(n^2)
      * */
-    private static void showTree(int node, int[][] a, int n, int level, boolean[] visited) {
+    private static void showTree(int node, boolean[][] a, int n, int level, boolean[] visited) {
         String spacer = "   ";
         for (int i = 1; i <= level; i++) {
             System.out.print(spacer);
@@ -114,7 +123,7 @@ public class Main {
         System.out.println("+Node" + node);
 
         for (int j = 1; j <= n; j++) {
-            if (a[node][j] == 1 && !visited[j]) {
+            if (a[node][j] && !visited[j]) {
                 showTree(j, a, n, level + 1, visited);
             }
         }
@@ -138,9 +147,8 @@ public class Main {
      * This algorithm is based on DFS iterative : if a node is not visited, add it to the three
      * Complexity: O(n^2)
      * */
-    private static int[][] getPartialTree(int[][] a, int n) {
+    private static void getPartialTree(boolean[][] a, int n, boolean[][] partialTree) {
 
-        int[][] partialTree = new int[n + 1][n + 1];
         boolean[] visited = new boolean[n + 1];
 
         Stack<Integer> st = new Stack<>();
@@ -152,17 +160,15 @@ public class Main {
             st.pop();
 
             for (int j = 1; j <= n; j++) {
-                if (a[node][j] == 1 && !visited[j]) {
-                    partialTree[node][j] = 1;
-                    partialTree[j][node] = 1;
+                if (a[node][j] && !visited[j]) {
+                    partialTree[node][j] = true;
+                    partialTree[j][node] = true;
 
                     st.push(j);
                     visited[j] = true;
                 }
             }
         }
-
-        return partialTree;
     }
 
     /** Shows all the connected components from the array given as argument
@@ -171,52 +177,77 @@ public class Main {
      * The function returns true if the graph is connected false otherwise
      * Complexity: O(n^2)
      * */
-    private static boolean connectedComponents(int[][] a, int n) {
+    private static boolean connectedComponents(boolean[][] a, int n) {
         int components = 0;
 
+        Stack<Integer> st = new Stack<>();
+
         boolean[] visited = new boolean[n + 1];
+
         for (int i = 1; i <= n; i++) {
-            if (!visited[i]) {
-                components++;
-                System.out.print("{ ");
-                DFS(i, a, n, visited);
-                System.out.print("} ");
+            if (visited[i]) {
+                continue;
             }
+            components++;
+
+            st.push(i);
+            visited[i] = true;
+
+            System.out.print("{ ");
+            while (!st.empty()) {
+                int node = st.peek();
+                st.pop();
+
+                if (n < 50) {
+                    System.out.print(node + " ");
+                }
+
+                for (int j = 1; j <= n; j++) {
+                    if (a[node][j] && !visited[j]) {
+                        st.push(j);
+
+                        visited[j] = true;
+                    }
+                }
+
+            }
+            System.out.print("}");
         }
 
         return components == 1;
     }
 
     /** A recursive DFS */
-    private static void DFS(int node, int[][] a, int n, boolean[] visited) {
+    private static void DFS(int node, boolean[][] a, int n, boolean[] visited) {
         visited[node] = true;
 
         if (n < 50) {
             System.out.print(node + " ");
         }
         for (int j = 1; j <= n; j++) {
-            if (a[node][j] == 1 && !visited[j]) {
+            if (a[node][j] && !visited[j]) {
                 DFS(j, a, n, visited);
             }
         }
     }
 
     /** It generates a random graph */
-    private static void initializeRandomGraph(int[][] a, int n) {
+    private static void initializeRandomGraph(boolean[][] a, int n) {
         for (int i = 1; i <= n; i++) {
             for (int j = i + 1; j <= n; j++) {
-                a[i][j] = (int) (Math.random() * 1000000) % 2;
+                boolean b = (int) (Math.random() * 1000000) % 2 == 1;
+                a[i][j] = b;
                 a[j][i] = a[i][j];
             }
         }
     }
 
     /** Shows the graph given as argument */
-    private static void showGraph(int[][] a, int n) {
+    private static void showGraph(boolean[][] a, int n) {
         System.out.println("\nThe size of the array: " + n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                System.out.print(a[i][j] + " ");
+                System.out.print((a[i][j] ? 1 : 0) + " ");
             }
             System.out.println("");
         }

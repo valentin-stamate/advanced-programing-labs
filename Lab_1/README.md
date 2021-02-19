@@ -17,6 +17,11 @@ and to show it as described, `showTree()` function is used. This function is eff
   
 More explanations are given in the function definitions.
 
+## What I changed before lab?
+* iterative DFS instead of recursive DFS for function `connectedComponents()`
+* changing int to boolean in graph representation
+
+
 `Created by Valentin Stamate(2B4) in 15.02.2021`
 
 
