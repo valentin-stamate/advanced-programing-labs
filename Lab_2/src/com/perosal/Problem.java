@@ -17,8 +17,10 @@ public class Problem {
     /** Adds a unique source to ArrayList */
     public void addSource(Source s) {
         if (checkDuplicates) {
-            if (sources.contains(s)) {
-                return;
+            for (Source sr : sources) {
+                if (sr.equals(s)) {
+                    return;
+                }
             }
         }
 

@@ -38,7 +38,7 @@ public class Destination {
 
     @Override
     public String toString() {
-        return "Source: " + name + " " + currentSupply + " " + maxSupply + " ";
+        return "Destination: " + "Name: " + name + " current supply: " + currentSupply + " max supply:" + maxSupply + " ";
     }
 
     @Override

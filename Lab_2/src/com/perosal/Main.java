@@ -82,7 +82,7 @@ public class Main {
         int nSources = 7000;
         int nDestinations = 7000;
         for (int i = 0; i < 7000; i++) {
-            int r = (int) (Math.random() * 10000);
+            int r = (int) (Math.random() * 5000);
             Destination d = new Destination("" + i, r);
             destinations.add(d);
         }
@@ -104,7 +104,6 @@ public class Main {
 
         Runtime runtime = Runtime.getRuntime();
         runtime.gc();
-
 
         long t1 = System.currentTimeMillis();
         long memory = runtime.totalMemory() - runtime.freeMemory();

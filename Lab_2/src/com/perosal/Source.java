@@ -20,9 +20,9 @@ abstract public class Source {
         this.type = sourceType;
         this.supply = supply;
         this.transportCost = 0;
-        checkDuplicates = true;
-        pq = new PriorityQueue<>(new DestinationComparator());
-        destinations = new ArrayList<>();
+        this.checkDuplicates = true;
+        this.pq = new PriorityQueue<>(new DestinationComparator());
+        this.destinations = new ArrayList<>();
     }
 
     /** Having this source, it pushed as much as possible supply
@@ -60,9 +60,12 @@ abstract public class Source {
     /** Adds a unique destination to the PriorityQueue */
     public void addDestination(Destination d, int cost) {
         ToDestination td = new ToDestination(d, cost);
+
         if (checkDuplicates) {
-            if (pq.contains(td)){
-                return;
+            for (ToDestination ds : pq) {
+                if (ds.equals(td)) {
+                    return;
+                }
             }
         }
 
@@ -122,7 +125,7 @@ abstract public class Source {
 
     @Override
     public String toString() {
-        return "Source: " + name + " " + type + " " + supply;
+        return "Source: " + "Name: " + name + " type: " + type + " supply:" + supply;
     }
 
     @Override

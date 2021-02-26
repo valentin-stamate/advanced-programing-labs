@@ -3,7 +3,7 @@ package com.perosal;
 import java.util.Objects;
 
 public class ToDestination {
-    public Destination destination;
+    public final Destination destination;
     public final int costToDestination;
 
     ToDestination(Destination d, int cost) {
