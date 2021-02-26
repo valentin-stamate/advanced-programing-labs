@@ -1,10 +1,11 @@
 package com.perosal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /** This class solved the problem */
 public class Problem {
-    private final ArrayList<Source> sources;
+    private final List<Source> sources;
     private int totalCost;
     private boolean checkDuplicates;
 
@@ -12,28 +13,29 @@ public class Problem {
         sources = new ArrayList<>();
         totalCost = 0;
         checkDuplicates = true;
+
     }
 
     /** Adds a unique source to ArrayList */
-    public void addSource(Source s) {
+    public void addSource(Source newSource) {
         if (checkDuplicates) {
-            for (Source sr : sources) {
-                if (sr.equals(s)) {
+            for (Source source : sources) {
+                if (newSource.equals(source)) {
                     return;
                 }
             }
         }
 
-        sources.add(s);
+        sources.add(newSource);
     }
 
     /** Loops through all the sources am for every source
      * push all it's capacity to the destinations that have
      * the smallest transportation cost */
     public void solve() {
-        for (Source s : sources) {
-            boolean finished = s.pushCommodities();
-            totalCost += s.getTransportCost();
+        for (Source source : sources) {
+            boolean finished = source.pushCommodities();
+            totalCost += source.getTransportCost();
 
             if (finished) {
                 break;
@@ -43,36 +45,36 @@ public class Problem {
 
     }
 
+    /** Getter for totalCost */
     public int getTotalCost() {
         return totalCost;
     }
 
     /** For bigger inputs it's better to disable this*/
-    public void checkDuplicates(boolean b) {
-        checkDuplicates = false;
+    public void checkDuplicates(boolean checkDuplicates) {
+        this.checkDuplicates = checkDuplicates;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         Source sr = sources.get(0);
-        sb.append("        ");
-        sb.append(sr.showDestinationNames());
+        stringBuilder.append("        ");
+        stringBuilder.append(sr.showDestinationNames());
 
         for (Source s : sources) {
-            sb.append(s.name);
-            sb.append("      ");
-            sb.append(s.showDestinationsCost());
-            sb.append(s.supply);
-            sb.append("\n");
+            stringBuilder.append(s.getName());
+            stringBuilder.append("      ");
+            stringBuilder.append(s.showDestinationsCost());
+            stringBuilder.append(s.getSupply());
+            stringBuilder.append("\n");
         }
-        sb.append("        ");
-        sb.append(sr.showDestinationsCapacity());
-        sb.append("\n");
-        return sb.toString();
+        stringBuilder.append("        ");
+        stringBuilder.append(sr.showDestinationsCapacity());
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
-
 
 }
 

@@ -1,14 +1,28 @@
 package com.perosal;
 
-import java.util.Objects;
-
 public class ToDestination {
     public final Destination destination;
-    public final int costToDestination;
+    private int costToDestination;
 
-    ToDestination(Destination d, int cost) {
-        this.destination = d;
-        this.costToDestination = cost;
+    ToDestination(Destination destination, int cost) {
+        this.destination = destination;
+        setCostToDestination(cost);
+    }
+
+    /** Getter for costToDestination meaning "The cost between this source
+     * and and this destination is costToDestination" */
+    public int getCostToDestination() {
+        return costToDestination;
+    }
+
+    /** Setter for costToDestination */
+    private void setCostToDestination(int cost) {
+        if (cost > 0) {
+            this.costToDestination = cost;
+        } else {
+            System.out.println("The cost(" + cost + ")" + " to source: " + destination.getName() + " should be grater than 0. It will be set to 1.");
+            this.costToDestination = 1;
+        }
     }
 
     /** Check if the destination is full */
@@ -17,10 +31,10 @@ public class ToDestination {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) return false;
-        ToDestination that = (ToDestination) o;
-        return destination.equals(that.destination);
+    public boolean equals(Object object) {
+        if (object == null) return false;
+        ToDestination toDestination = (ToDestination) object;
+        return destination.equals(toDestination.destination);
     }
 
 }

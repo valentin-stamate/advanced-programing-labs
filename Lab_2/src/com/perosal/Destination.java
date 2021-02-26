@@ -1,17 +1,32 @@
 package com.perosal;
 
 public class Destination {
-    public final String name;
+    private final String name;
     private int currentSupply;
-    public final int maxSupply;
+    private int maxSupply;
 
     /** @param name is the name of destination, every destination
      *              has unique name
      *  @param maxSupply is the maximum supply it can get*/
     Destination(String name, int maxSupply) {
         this.name = name;
-        this.maxSupply = maxSupply;
         this.currentSupply = 0;
+        setMaxSupply(maxSupply);
+    }
+
+    /** Getter for maxSupply */
+    public int getMaxSupply() {
+        return maxSupply;
+    }
+
+    /** Setter for maxSupply */
+    private void setMaxSupply(int maxSupply) {
+        this.maxSupply = maxSupply;
+    }
+
+    /** Getter for name */
+    public String getName() {
+        return name;
     }
 
     /** It takes as parameter the maximum amount of a source.
@@ -42,11 +57,10 @@ public class Destination {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Destination that = (Destination) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Destination that = (Destination) object;
         return name.equals(that.name);
     }
-
 }

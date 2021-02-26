@@ -6,23 +6,43 @@ import java.util.PriorityQueue;
 
 /** A source instance has all the destination kept into a PriorityQueue*/
 abstract public class Source {
-    public final String name;
+    private final String name;
     private final SourceType type;
-    public int supply;
+    private int supply;
     private boolean checkDuplicates;
     private int transportCost;
 
-    private final PriorityQueue<ToDestination> pq;
+    private final PriorityQueue<ToDestination> priorityQueue;
     private final ArrayList<ToDestination> destinations; // for printing purposes
 
     Source(String name, SourceType sourceType, int supply) {
         this.name = name;
         this.type = sourceType;
-        this.supply = supply;
+        setSupply(supply);
         this.transportCost = 0;
         this.checkDuplicates = true;
-        this.pq = new PriorityQueue<>(new DestinationComparator());
+        this.priorityQueue = new PriorityQueue<>(new DestinationComparator());
         this.destinations = new ArrayList<>();
+    }
+
+    /** Setter for supply */
+    private void setSupply(int supply) {
+        if (supply >= 0) {
+            this.supply = supply;
+        } else {
+            supply = 0;
+            System.out.println("Supply " + name + " should be grater than 0");
+        }
+    }
+
+    /** Getter for name */
+    public String getName() {
+        return name;
+    }
+
+    /** Setter for supply */
+    public int getSupply() {
+        return supply;
     }
 
     /** Having this source, it pushed as much as possible supply
@@ -33,15 +53,15 @@ abstract public class Source {
         while (!this.isEmpty()) {
             int cost = 0;
 
-            while (!pq.isEmpty() && pq.peek().isFull()) {
-                pq.poll();
+            while (!priorityQueue.isEmpty() && priorityQueue.peek().isFull()) {
+                priorityQueue.poll();
             }
 
-            if (pq.isEmpty()) {
+            if (priorityQueue.isEmpty()) {
                 return true; // problem solved
             }
 
-            ToDestination toDest = pq.poll();
+            ToDestination toDest = priorityQueue.poll();
             Destination dest = toDest.destination;
 
             int oldSupply = supply;
@@ -49,8 +69,7 @@ abstract public class Source {
 
             int supplyPushed = oldSupply - supply;
 
-            cost += supplyPushed * toDest.costToDestination;
-//            System.out.println(name + " -> " + dest.name + " " + supplyPushed + " +" + cost);
+            cost += supplyPushed * toDest.getCostToDestination();
             transportCost += cost;
         }
 
@@ -58,23 +77,25 @@ abstract public class Source {
     }
 
     /** Adds a unique destination to the PriorityQueue */
-    public void addDestination(Destination d, int cost) {
-        ToDestination td = new ToDestination(d, cost);
+    public void addDestination(Destination destination, int cost) {
+        ToDestination toNewDestination = new ToDestination(destination, cost);
 
         if (checkDuplicates) {
-            for (ToDestination ds : pq) {
-                if (ds.equals(td)) {
+            for (ToDestination toDestination : priorityQueue) {
+                if (toDestination.equals(toNewDestination)) {
                     return;
                 }
             }
         }
 
-        destinations.add(td);
-        pq.add(td);
+        destinations.add(toNewDestination);
+        priorityQueue.add(toNewDestination);
     }
 
-    public void checkDuplicates(boolean b) {
-        checkDuplicates = b;
+    /** For a better time complexity this setter activate/deactivate the checking
+     * for duplicated when adding instances */
+    public void checkDuplicates(boolean checkDuplicates) {
+        this.checkDuplicates = checkDuplicates;
     }
 
     /** Check whether the source is empty or not */
@@ -92,35 +113,38 @@ abstract public class Source {
         return transportCost;
     }
 
+    /** Return as a string all the cost destinations from this source */
     public String showDestinationsCost() {
-        StringBuilder s = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        for (ToDestination td : destinations) {
-            s.append(td.costToDestination).append("      ");
+        for (ToDestination toDestination : destinations) {
+            stringBuilder.append(toDestination.getCostToDestination()).append("      ");
         }
 
-        return s.toString();
+        return stringBuilder.toString();
     }
 
+    /** Returns as a string all de destination names */
     public String showDestinationNames() {
-        StringBuilder sb = new StringBuilder();
-        for (ToDestination td : destinations) {
-            sb.append(td.destination.name).append("    ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (ToDestination toDestination : destinations) {
+            stringBuilder.append(toDestination.destination.getName()).append("    ");
         }
-        sb.append("\n");
+        stringBuilder.append("\n");
 
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
+    /** Returns as a string all the destination capacities */
     public String showDestinationsCapacity() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        for (ToDestination td : destinations) {
-            sb.append(td.destination.maxSupply).append("     ");
+        for (ToDestination toDestination : destinations) {
+            stringBuilder.append(toDestination.destination.getMaxSupply()).append("     ");
         }
-        sb.append("\n");
+        stringBuilder.append("\n");
 
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
     @Override
@@ -129,10 +153,10 @@ abstract public class Source {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Source source = (Source) o;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Source source = (Source) object;
         return name.equals(source.name);
     }
 
@@ -141,7 +165,7 @@ abstract public class Source {
 /** This comparator is used for the PriorityQueue in the Source class */
 class DestinationComparator implements Comparator<ToDestination> {
     @Override
-    public int compare(ToDestination o1, ToDestination o2) {
-        return o1.costToDestination - o2.costToDestination;
+    public int compare(ToDestination toDestination1, ToDestination toDestination2) {
+        return toDestination1.getCostToDestination() - toDestination2.getCostToDestination();
     }
 }
