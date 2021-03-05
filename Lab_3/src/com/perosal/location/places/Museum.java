@@ -29,6 +29,10 @@ public class Museum extends Location implements Payable, Visitable {
         return openStart;
     }
 
+    public long getOpeningTimeInMs() {
+        return openStart.getTimeInMillis();
+    }
+
     public Calendar getOpenEnd() {
         return openEnd;
     }

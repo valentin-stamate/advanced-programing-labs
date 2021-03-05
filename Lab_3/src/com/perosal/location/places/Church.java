@@ -20,6 +20,10 @@ public class Church extends Location implements Visitable {
         setDefaultHours(openStart, openEnd);
     }
 
+    public long getOpeningTimeInMs() {
+        return openStart.getTimeInMillis();
+    }
+
     @Override
     public void setOpeningHours(Calendar openStart, Calendar openEnd) {
         this.openStart = openStart;

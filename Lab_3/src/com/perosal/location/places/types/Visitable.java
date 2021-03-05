@@ -22,4 +22,6 @@ public interface Visitable {
         return Duration.ofMillis(openEnd.getTimeInMillis() - openStart.getTimeInMillis());
     }
 
+
+
 }
