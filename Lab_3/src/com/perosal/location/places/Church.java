@@ -1,6 +1,7 @@
 package com.perosal.location.places;
 
 import com.perosal.location.Location;
+import com.perosal.location.places.types.Classifiable;
 import com.perosal.location.places.types.Visitable;
 import java.util.Calendar;
 
@@ -28,6 +29,21 @@ public class Church extends Location implements Visitable {
     public void setOpeningHours(Calendar openStart, Calendar openEnd) {
         this.openStart = openStart;
         this.openEnd = openEnd;
+    }
+
+    @Override
+    public int getEndingHour() {
+        return openEnd.get(Calendar.HOUR);
+    }
+
+    @Override
+    public int getStartingHour() {
+        return openStart.get(Calendar.HOUR);
+    }
+
+    @Override
+    public int getVisitingDurationInHours() {
+        return Math.abs(openEnd.get(Calendar.HOUR) - openStart.get(Calendar.HOUR));
     }
 
     @Override

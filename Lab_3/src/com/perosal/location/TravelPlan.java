@@ -2,6 +2,9 @@ package com.perosal.location;
 
 import java.util.*;
 
+import com.perosal.location.places.Church;
+import com.perosal.location.places.Museum;
+
 public class TravelPlan {
     private final City city;
     private final List<Location> locationPreferences;
@@ -76,6 +79,106 @@ public class TravelPlan {
         }
         System.out.println("");
     }
+
+    public void travel(int nDays, int hourStart, int hourEnd) {
+        Location locationStart = locationPreferences.get(0); // hotel
+
+        int nLocations = locationPreferences.size();
+
+        boolean[] visited = new boolean[nLocations];
+        int[] locationVisitNumber = new int[nLocations];
+
+        int hoursToVisit = hourEnd - hourStart;
+        for (int day = 1; day <= nDays; day++) {
+            Location currentLocation = locationStart;
+
+            int remainingHours = hoursToVisit;
+
+            while (remainingHours >= hoursToVisit / 2) {
+                Location bestLocation = getBestLocation(currentLocation, locationVisitNumber);
+
+                System.out.println(remainingHours + " - " + hoursToVisit);
+
+                if (currentLocation == bestLocation) {
+                    break;
+                }
+
+                int duration = getLocationDuration(bestLocation);
+
+                if (remainingHours - duration >= 0) {
+                    locationVisitNumber[mapToIndex.get(bestLocation)]++;
+                    remainingHours = remainingHours - duration;
+                    currentLocation = bestLocation;
+                    visited[mapToIndex.get(bestLocation)] = true;
+                }
+
+                remainingHours = remainingHours - 1;
+            }
+        }
+
+        System.out.println("The following locations were visited:");
+        for (int i = 0; i < nLocations; i++) {
+            if (visited[i]) {
+                System.out.println(locationPreferences.get(i));
+            }
+        }
+
+    }
+
+    private int getLocationDuration(Location bestLocation) {
+        switch (bestLocation.getType()) {
+            case CHURCH:
+                return ((Church)bestLocation).getVisitingDurationInHours();
+            case MUSEUM:
+                return ((Museum)bestLocation).getVisitingDurationInHours();
+            case HOTEL:
+            case RESTAURANT:
+                return 0;
+        }
+
+        return 24;
+    }
+
+    private Location getBestLocation(Location currentLocation, int[] locationVisitNumber) {
+
+        List<Location> neighbours = currentLocation.getNeighbours();
+        neighbours.sort(new LocationEndingHourComparator());
+
+        for (Location neighbour : neighbours) {
+            if (locationVisitNumber[mapToIndex.get(neighbour)] == 0 && getEndingHourFromLocation(currentLocation) <= getStartHourFromLocation(neighbour)) {
+                return neighbour;
+            }
+        }
+
+        return neighbours.get(0);
+
+    }
+
+    private int getStartHourFromLocation(Location neighbour) {
+        switch (neighbour.getType()) {
+            case CHURCH:
+                return ((Church)neighbour).getStartingHour();
+            case MUSEUM:
+                return ((Museum)neighbour).getStartingHour();
+            case HOTEL:
+            case RESTAURANT:
+                return 0;
+        }
+        return 24;
+    }
+
+    private int getEndingHourFromLocation(Location neighbour) {
+        switch (neighbour.getType()) {
+            case CHURCH:
+                return ((Church)neighbour).getEndingHour();
+            case MUSEUM:
+                return ((Museum)neighbour).getEndingHour();
+            case HOTEL:
+            case RESTAURANT:
+                return 0;
+        }
+        return 24;
+    }
 }
 
 class LocationComparator implements Comparator<Location> {
@@ -100,4 +203,30 @@ class DijkstraNodeComparator implements Comparator<Location> {
     public int compare(Location locationA, Location locationB) {
         return distance[mapToIndex.get(locationA)] - distance[mapToIndex.get(locationB)];
     }
+}
+
+class LocationEndingHourComparator implements Comparator<Location> {
+
+    @Override
+    public int compare(Location locationA, Location locationB) {
+
+        int locationHourEndingA = getEndingHour(locationA);
+        int locationHourEndingB = getEndingHour(locationB);
+
+        return locationHourEndingA - locationHourEndingB;
+    }
+
+    private int getEndingHour(Location location) {
+        switch (location.getType()) {
+            case CHURCH:
+                return ((Church)location).getEndingHour();
+            case MUSEUM:
+                return ((Museum)location).getEndingHour();
+            case HOTEL:
+            case RESTAURANT:
+                return 0;
+        }
+        return 0;
+    }
+
 }

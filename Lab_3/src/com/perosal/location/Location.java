@@ -46,4 +46,9 @@ public abstract class Location {
 
         return neighbours;
     }
+
+    public LocationType getType() {
+        return this.locationType;
+    }
+
 }

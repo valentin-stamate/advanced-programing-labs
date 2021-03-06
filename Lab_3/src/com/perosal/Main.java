@@ -51,6 +51,43 @@ public class Main {
         TravelPlan travelPlan = new TravelPlan(city, locationList);
         travelPlan.shortestPathBetween(locationList.get(0), locationList.get(5));
 
+        bonus();
+    }
+
+    private static void bonus() throws FileNotFoundException {
+        System.out.println("----==== Bonus ====----");
+
+        int nLocations, nDays, hourStart, hourEnd;
+        File input = new File("bonus.in");
+        Scanner scanner = new Scanner(input);
+
+        nLocations = scanner.nextInt();
+        nDays = scanner.nextInt();
+        hourStart = scanner.nextInt();
+        hourEnd = scanner.nextInt();
+
+        City city = new City("Braila");
+        List<Location> locationList = new ArrayList<>();
+
+        for (int i = 1; i <= nLocations; i++) {
+            Location location = getLocation(scanner);
+            locationList.add(location);
+            city.addLocation(location);
+        }
+
+        while (scanner.hasNext()) {
+            int i = scanner.nextInt();
+            int j = scanner.nextInt();
+            int cost = scanner.nextInt();
+
+            city.addCostBetween(i, j, cost);
+            city.addCostBetween(j, i, cost);
+        }
+
+        TravelPlan travelPlan = new TravelPlan(city, locationList);
+
+        travelPlan.travel(nDays, hourStart, hourEnd);
+
     }
 
     private static Location getLocation(Scanner scanner) {

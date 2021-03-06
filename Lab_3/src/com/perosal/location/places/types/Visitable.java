@@ -7,6 +7,10 @@ import java.util.Date;
 public interface Visitable {
 
     void setOpeningHours(Calendar openStart, Calendar openEnd);
+    int getEndingHour();
+    int getStartingHour();
+    int getVisitingDurationInHours();
+
     String getOpeningHours();
 
     default void setDefaultHours(Calendar openStart, Calendar openEnd) {
@@ -18,10 +22,7 @@ public interface Visitable {
     }
 
     static Duration getVisitingDuration(Calendar openStart, Calendar openEnd) {
-
         return Duration.ofMillis(openEnd.getTimeInMillis() - openStart.getTimeInMillis());
     }
-
-
 
 }

@@ -54,6 +54,21 @@ public class Museum extends Location implements Payable, Visitable {
     }
 
     @Override
+    public int getEndingHour() {
+        return openEnd.get(Calendar.HOUR);
+    }
+
+    @Override
+    public int getStartingHour() {
+        return openStart.get(Calendar.HOUR);
+    }
+
+    @Override
+    public int getVisitingDurationInHours() {
+        return Math.abs(openEnd.get(Calendar.HOUR) - openStart.get(Calendar.HOUR));
+    }
+
+    @Override
     public String getOpeningHours() {
         return "The museum " + getName() + " is opened between: "
                 + openStart.get(Calendar.HOUR) + ":" + openStart.get(Calendar.MINUTE)
