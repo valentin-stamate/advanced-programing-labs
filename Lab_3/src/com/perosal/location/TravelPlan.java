@@ -80,7 +80,7 @@ public class TravelPlan {
         System.out.println("");
     }
 
-    public void travel(int nDays, int hourStart, int hourEnd) {
+    public int travel(int nDays, int hourStart, int hourEnd) {
         Location locationStart = locationPreferences.get(0); // hotel
 
         int nLocations = locationPreferences.size();
@@ -92,12 +92,12 @@ public class TravelPlan {
         for (int day = 1; day <= nDays; day++) {
             Location currentLocation = locationStart;
 
+            System.out.println("Day " + day);
+
             int remainingHours = hoursToVisit;
 
             while (remainingHours >= hoursToVisit / 2) {
                 Location bestLocation = getBestLocation(currentLocation, locationVisitNumber);
-
-                System.out.println(remainingHours + " - " + hoursToVisit);
 
                 if (currentLocation == bestLocation) {
                     break;
@@ -110,19 +110,24 @@ public class TravelPlan {
                     remainingHours = remainingHours - duration;
                     currentLocation = bestLocation;
                     visited[mapToIndex.get(bestLocation)] = true;
+                    System.out.println(bestLocation);
                 }
 
                 remainingHours = remainingHours - 1;
             }
+
+
+
         }
 
-        System.out.println("The following locations were visited:");
+        int locationsVisited = 0;
         for (int i = 0; i < nLocations; i++) {
             if (visited[i]) {
-                System.out.println(locationPreferences.get(i));
+                locationsVisited++;
             }
         }
 
+        return locationsVisited;
     }
 
     private int getLocationDuration(Location bestLocation) {
