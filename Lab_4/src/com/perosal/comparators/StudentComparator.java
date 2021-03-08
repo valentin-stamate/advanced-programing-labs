@@ -8,6 +8,10 @@ public class StudentComparator implements Comparator<Student> {
 
     @Override
     public int compare(Student firstStudent, Student secondStudent) {
-        return (int)Math.floor(secondStudent.getGrade() - firstStudent.getGrade());
+        float gradeA = firstStudent.getGrade();
+        float gradeB = secondStudent.getGrade();
+
+        return Float.compare(gradeB, gradeA);
+
     }
 }

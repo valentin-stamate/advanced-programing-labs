@@ -15,7 +15,9 @@ public class Student {
     }
 
     public void addPreference(School school) {
-        preferences.add(school);
+        if (!preferences.contains(school)) {
+            preferences.add(school);
+        }
     }
 
     public float getGrade() {
@@ -27,4 +29,11 @@ public class Student {
         return name + " " + finalGrade;
     }
 
+    public School getNextSchool() {
+        return preferences.poll();
+    }
+
+    public boolean canApply() {
+        return preferences.size() != 0;
+    }
 }

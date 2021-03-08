@@ -1,5 +1,6 @@
 package com.perosal;
 
+import com.github.javafaker.Faker;
 import com.perosal.comparators.SchoolComparator;
 import com.perosal.comparators.StudentComparator;
 
@@ -12,9 +13,55 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         compulsory();
+        optional();
+    }
+
+    private static void optional() {
+        System.out.println("");
+
+        Faker faker = new Faker();
+
+        List<Student> studentList = new ArrayList<>();
+        List<School> schoolList = new ArrayList<>();
+
+        int nStudents = 40;
+        int nSchools = 5;
+
+        IntStream.range(0, nStudents)
+                .forEach( i -> {
+                    Student student = new Student(faker.name().fullName(), (float) generateNumber(7.8, 10));
+                    studentList.add(student);
+                });
+
+        IntStream.range(0, nSchools)
+                .forEach(i -> {
+                    School school = new School("School " + faker.name().fullName(), 7, (float) generateNumber(7.5, 8.5));
+                    schoolList.add(school);
+                });
+
+        studentList.forEach(student -> {
+            student.addPreference(schoolList.get((int)(generateNumber(0, nSchools - 0.1))));
+        });
+
+        Problem problem = new Problem(studentList, schoolList);
+        Solution.solve(problem);
+
+    }
+
+    private static double generateNumber(double start, double end) {
+        double difference = Math.abs(end - start);
+
+        double random = Math.random();
+        random *= 1000;
+        random = random - (int)(random / difference) * difference;
+
+        start += random;
+
+        return ((double)(int)(start * 100)) / 100;
     }
 
     private static void compulsory() throws FileNotFoundException {
+        System.out.println("----==== Compulsory ====----");
         File inputFile = new File("input.in");
         Scanner scanner = new Scanner(inputFile);
 
@@ -47,9 +94,11 @@ public class Main {
         IntStream.range(0, nSchools)
                 .forEach( i -> {
                     String schoolName = scanner.next();
-                    int schoolCapacity = scanner.nextInt();
 
-                    School school = new School(schoolName, schoolCapacity);
+                    int schoolCapacity = scanner.nextInt();
+                    float schoolMinGrade = scanner.nextFloat();
+
+                    School school = new School(schoolName, schoolCapacity, schoolMinGrade);
 
                     schools.add(school);
                     schoolList.add(school);
@@ -111,6 +160,33 @@ public class Main {
             System.out.println(potentialStudents);
             System.out.println("");
         });
+
+        System.out.println("----==== Optional ====----");
+
+        System.out.println("The school list is:");
+        System.out.println(schoolList + "\n");
+        System.out.println("The student list is:");
+        System.out.println(studentList + "\n");
+
+        System.out.println("The students that can enter in these schools are:");
+        studentList.stream()
+                .filter( student -> {
+                    boolean canBeAccepted = false;
+
+                    for(School school : schoolList) {
+                        canBeAccepted = school.canAccept(student) || canBeAccepted;
+                    }
+
+                    return  canBeAccepted;
+                } )
+                .forEach(System.out::println);
+
+        Student topStudent = studentList.get(3);
+
+        System.out.println("\nThe schools that can accept student " + topStudent + " are:");
+        schoolList.stream()
+                .filter( school -> school.canAccept(topStudent))
+                .forEach(System.out::println);
 
     }
 
