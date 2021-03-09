@@ -14,24 +14,57 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         compulsory();
         optional();
+        bonus();
+    }
+
+    private static void bonus() {
+        System.out.println("----==== Bonus ====----");
+        int nStudents = 45;
+        int nSchools = 6;
+
+        List<Student> studentList = generateRandomStudentList(nStudents);
+        List<School> schoolList = generateRandomSchoolList(nSchools);
+        assignRandomSchoolsToStudents(studentList, schoolList);
+
+        Problem problem = new Problem(studentList, schoolList);
+        Solution.solveWithGaleShapley(problem);
     }
 
     private static void optional() {
         System.out.println("");
 
-        Faker faker = new Faker();
-
-        List<Student> studentList = new ArrayList<>();
-        List<School> schoolList = new ArrayList<>();
-
         int nStudents = 40;
         int nSchools = 5;
 
-        IntStream.range(0, nStudents)
-                .forEach( i -> {
-                    Student student = new Student(faker.name().fullName(), (float) generateNumber(7.8, 10));
-                    studentList.add(student);
-                });
+        List<Student> studentList = generateRandomStudentList(nStudents);
+        List<School> schoolList = generateRandomSchoolList(nSchools);
+        assignRandomSchoolsToStudents(studentList, schoolList);
+
+        Problem problem = new Problem(studentList, schoolList);
+        Solution.solve(problem);
+
+    }
+
+    private static void assignRandomSchoolsToStudents(List<Student> studentList, List<School> schoolList) {
+        int nSchools = schoolList.size();
+
+        studentList.forEach(student -> {
+            int lastPreferenceRank = 1;
+
+            for (int i = 1; i <= nSchools; i++) {
+
+                student.addPreference(schoolList.get((int)(generateNumber(0, nSchools - 0.1))), lastPreferenceRank);
+
+                double randomRaw = generateNumber(0, 13);
+                int random = (int)(randomRaw) % 3 == 0 ? 0 : 1;
+                lastPreferenceRank += random;
+            }
+        });
+    }
+
+    private static List<School> generateRandomSchoolList(int nSchools) {
+        List<School> schoolList = new ArrayList<>();
+        Faker faker = new Faker();
 
         IntStream.range(0, nSchools)
                 .forEach(i -> {
@@ -39,13 +72,20 @@ public class Main {
                     schoolList.add(school);
                 });
 
-        studentList.forEach(student -> {
-            student.addPreference(schoolList.get((int)(generateNumber(0, nSchools - 0.1))));
-        });
+        return schoolList;
+    }
 
-        Problem problem = new Problem(studentList, schoolList);
-        Solution.solve(problem);
+    private static List<Student> generateRandomStudentList(int nStudents) {
+        List<Student> studentList = new ArrayList<>();
+        Faker faker = new Faker();
 
+        IntStream.range(0, nStudents)
+                .forEach( i -> {
+                    Student student = new Student(faker.name().fullName(), (float) generateNumber(7.8, 10));
+                    studentList.add(student);
+                });
+
+        return  studentList;
     }
 
     private static double generateNumber(double start, double end) {
@@ -119,6 +159,7 @@ public class Main {
                     IntStream.range(0, nPreferences)
                             .forEach( j -> {
                                 int schoolIndex = scanner.nextInt();
+                                int schoolPriority = scanner.nextInt();
 
                                 School school = schoolList.get(schoolIndex);
 

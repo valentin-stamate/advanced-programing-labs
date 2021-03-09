@@ -28,4 +28,8 @@ public class Problem {
             System.out.println("");
         });
     }
+
+    public List<School> getSchoolList() {
+        return schoolList;
+    }
 }

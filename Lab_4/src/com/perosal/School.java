@@ -38,10 +38,30 @@ public class School {
     }
 
     public boolean canAccept(Student student) {
-        return student.getGrade() >= minGrade;
+        return student.getGrade() >= minGrade && !isFull();
     }
 
     public void showStudentList() {
         studentsAssigned.forEach(System.out::println);
+    }
+
+    public void removeStudent(Student student) {
+        studentsAssigned.remove(student);
+    }
+
+    public Student getWorstStudent() {
+        if (studentsAssigned.size() == 0) {
+            return null;
+        }
+
+        Student worstStudent = studentsAssigned.get(0);
+
+        for (Student student : studentsAssigned) {
+            if (worstStudent.better(student)) {
+                worstStudent = student;
+            }
+        }
+
+        return worstStudent;
     }
 }
