@@ -1,12 +1,9 @@
 package com.perosal;
 
+import com.perosal.exceptions.InvalidCommandException;
 import com.perosal.exceptions.InvalidPathException;
 import com.perosal.media.Catalog;
-import com.perosal.media.items.Image;
 import com.perosal.media.items.MediaItem;
-import com.perosal.media.items.OtherFile;
-import com.perosal.media.items.Song;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,11 +13,11 @@ public class Main {
 
     private static final String mediaPath = "media";
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InvalidPathException {
-        compulsory();
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InvalidPathException, InvalidCommandException {
+        compulsory(); // + compulsory
     }
 
-    private static void compulsory() throws IOException, ClassNotFoundException, InvalidPathException {
+    private static void compulsory() throws IOException, ClassNotFoundException, InvalidPathException, InvalidCommandException {
         System.out.println(Color.GREEN_BOLD + "----==== Compulsory ====----" + Color.RESET);
         File mediaRoot = new File(mediaPath);
 
@@ -38,6 +35,13 @@ public class Main {
         catalogB.list();
         System.out.println("");
         System.out.println(catalogB);
+
+        System.out.println(Color.YELLOW_BOLD + "----==== Compulsory ====----" + Color.RESET);
+        Catalog catalogC = catalogB.shell();
+
+        if (catalogC != null) {
+            System.out.println(catalogC);
+        }
     }
 
     private static void getFiles(File folder, List<MediaItem> mediaList) throws InvalidPathException {
@@ -53,24 +57,9 @@ public class Main {
                 return;
             }
 
-            MediaItem mediaItem = getMediaItemFromFile(file);
+            MediaItem mediaItem = Catalog.getMediaItemFromFile(file);
             mediaList.add(mediaItem);
         }
-    }
-
-    private static MediaItem getMediaItemFromFile(File file) throws InvalidPathException {
-        String filePath = file.getPath();
-        String extension = filePath.substring(filePath.lastIndexOf("."));
-
-        if (Image.getSupportedTypes().contains(extension)) {
-            return new Image(file);
-        }
-
-        if (Song.getSupportedTypes().contains(extension)) {
-            return new Song(file);
-        }
-
-        return new OtherFile(file);
     }
 
 }
