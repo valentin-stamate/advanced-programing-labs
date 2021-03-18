@@ -11,18 +11,24 @@ import java.util.List;
 public abstract class MediaItem implements Serializable {
     private final File file;
     private final List<String> fileMedata;
+    private final List<String> fileFormat;
 
-    protected MediaItem(File file) throws InvalidPathException {
+    protected MediaItem(File file, List<String> fileFormat) throws InvalidPathException {
         if (!file.getPath().contains("media")) {
             throw new InvalidPathException("The path is invalid!");
         }
 
+        this.fileFormat = fileFormat;
         this.file = file;
         this.fileMedata = initializeMetadata();
     }
 
     public File getFile() {
         return file;
+    }
+
+    public List<String> getFileFormat() {
+        return fileFormat;
     }
 
     public List<String> getMetadata() {
@@ -49,4 +55,7 @@ public abstract class MediaItem implements Serializable {
         return metadata;
     }
 
+    public boolean sameType(MediaItem mediaItemB) {
+        return this.fileFormat == mediaItemB.getFileFormat();
+    }
 }

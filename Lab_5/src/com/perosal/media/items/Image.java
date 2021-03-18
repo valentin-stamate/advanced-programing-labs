@@ -11,7 +11,7 @@ public class Image extends MediaItem {
     private static final List<String> supportedFormats = new ArrayList<>(Arrays.asList(arrayExtension));
 
     public Image(File file) throws InvalidPathException {
-        super(file);
+        super(file, supportedFormats);
     }
 
     public static List<String> getSupportedTypes() {
@@ -22,4 +22,13 @@ public class Image extends MediaItem {
     public String toString() {
         return "Image{path='" + getPath() + "}";
     }
+
+    public static List<String> getSupportedFormats() {
+        return supportedFormats;
+    }
+
+    public static Image getDummy() throws InvalidPathException {
+        return new Image(new File("media/hello_world.png"));
+    }
+
 }

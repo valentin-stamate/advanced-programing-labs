@@ -11,7 +11,7 @@ public class Song extends MediaItem {
     private static final List<String> supportedFormats = new ArrayList<>(Arrays.asList(arrayExtension));
 
     public Song(File file) throws InvalidPathException {
-        super(file);
+        super(file, supportedFormats);
     }
 
     public static List<String> getSupportedTypes() {
@@ -21,5 +21,13 @@ public class Song extends MediaItem {
     @Override
     public String toString() {
         return "Song{path='" + getPath() + "}";
+    }
+
+    public List<String> getSupportedFormats() {
+        return supportedFormats;
+    }
+
+    public static Song getDummy() throws InvalidPathException {
+        return new Song(new File("media/song.m4a"));
     }
 }

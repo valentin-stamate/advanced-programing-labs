@@ -7,5 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="org.apache.tika:tika-parsers:1.25" level="project" />
+    <orderEntry type="library" name="org.apache.tika:tika-core:1.25" level="project" />
   </component>
 </module>
