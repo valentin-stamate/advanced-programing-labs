@@ -23,12 +23,12 @@ public class Main {
 
     private static final String mediaPath = "media";
 
-    public static void main(String[] args) throws InvalidPathException, InvalidCommandException, IOException, ClassNotFoundException {
+    public static void main(String[] args) {
         compulsory(); // + optional
         bonus();
     }
 
-    private static void bonus() throws InvalidPathException {
+    private static void bonus() {
         System.out.println(Color.BLUE_BOLD + "----==== Bonus ====----" + Color.RESET);
 
         BodyContentHandler handler   = new BodyContentHandler();
@@ -55,9 +55,13 @@ public class Main {
         List<MediaItem> mediaItemsRow = new ArrayList<>(graphLength);
 
         for (int i = 1; i <= 25; i++) {
-            mediaItemsRow.add(Image.getDummy());
-            mediaItemsRow.add(OtherFile.getDummy());
-            mediaItemsRow.add(Song.getDummy());
+            try {
+                mediaItemsRow.add(Image.getDummy());
+                mediaItemsRow.add(OtherFile.getDummy());
+                mediaItemsRow.add(Song.getDummy());
+            } catch (InvalidPathException e) {
+                e.printStackTrace();
+            }
         }
 
         List<MediaItem> mediaItemsCol = new ArrayList<>(mediaItemsRow);
@@ -106,7 +110,7 @@ public class Main {
                 break;
             }
 
-            System.out.println(dayNumber++);
+            System.out.println("Day" + dayNumber++);
             currentDayFiles.forEach(System.out::println);
             System.out.println("");
         }
@@ -128,7 +132,7 @@ public class Main {
         }
     }
 
-    private static void compulsory() throws IOException, ClassNotFoundException, InvalidPathException, InvalidCommandException {
+    private static void compulsory() {
         System.out.println(Color.GREEN_BOLD + "----==== Compulsory ====----" + Color.RESET);
         File mediaRoot = new File(mediaPath);
 
@@ -137,18 +141,38 @@ public class Main {
 
         Catalog catalogA = new Catalog();
         mediaItems.forEach(catalogA::add);
-        catalogA.save();
 
-        Catalog catalogB = Catalog.load();
+        try {
+            catalogA.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Catalog.play(mediaItems.get(1));
+        Catalog catalogB = null;
+        try {
+            catalogB = Catalog.load();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Catalog.play(mediaItems.get(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         catalogB.list();
         System.out.println("");
         System.out.println(catalogB);
 
         System.out.println(Color.YELLOW_BOLD + "----==== Compulsory ====----" + Color.RESET);
-        Catalog catalogC = catalogB.shell();
+        Catalog catalogC = null;
+
+        try {
+            catalogC = catalogB.shell();
+        } catch (InvalidCommandException | IOException | InvalidPathException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         if (catalogC != null) {
             System.out.println(catalogC);
@@ -164,7 +188,7 @@ public class Main {
         }
     }
 
-    private static void getFiles(File folder, List<MediaItem> mediaList) throws InvalidPathException {
+    private static void getFiles(File folder, List<MediaItem> mediaList) {
         File[] files = folder.listFiles();
 
         if (files == null) {
@@ -177,7 +201,12 @@ public class Main {
                 return;
             }
 
-            MediaItem mediaItem = Catalog.getMediaItemFromFile(file);
+            MediaItem mediaItem = null;
+            try {
+                mediaItem = Catalog.getMediaItemFromFile(file);
+            } catch (InvalidPathException e) {
+                e.printStackTrace();
+            }
             mediaList.add(mediaItem);
         }
     }
@@ -185,8 +214,12 @@ public class Main {
 }
 
 class AutoDetectParseExample {
-    public static void main(String[] args) throws IOException, SAXException, TikaException {
-        System.out.println(parseToPlainText());
+    public static void main(String[] args) {
+        try {
+            System.out.println(parseToPlainText());
+        } catch (IOException | SAXException | TikaException e) {
+            e.printStackTrace();
+        }
     }
     public static String parseToPlainText() throws IOException, SAXException, TikaException {
         BodyContentHandler handler = new BodyContentHandler();
