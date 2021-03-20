@@ -10,7 +10,7 @@ import java.io.File;
 
 public class AddCommand implements ShellCommand{
     @Override
-    public void run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException {
+    public Catalog run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException {
         if (args.length != 2) {
             throw new InvalidCommandException(Color.RED_BOLD + "[Add]Invalid command" + Color.RESET);
         }
@@ -21,5 +21,7 @@ public class AddCommand implements ShellCommand{
         MediaItem mediaItem = Catalog.getMediaItemFromFile(file);
 
         catalog.add(mediaItem);
+
+        return null;
     }
 }

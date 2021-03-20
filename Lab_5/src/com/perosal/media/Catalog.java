@@ -8,8 +8,6 @@ import com.perosal.media.items.MediaItem;
 import com.perosal.media.items.OtherFile;
 import com.perosal.media.items.Song;
 import com.perosal.shell.*;
-
-import javax.sound.midi.Soundbank;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Catalog implements Serializable {
-    private static final String fileSerializerName = "catalog.ser";
+    private static final String FILE_SERIALIZER_NAME = "catalog.ser";
     private final List<MediaItem> mediaItems;
 
     public Catalog() {
@@ -30,6 +28,10 @@ public class Catalog implements Serializable {
 
     public void add(MediaItem item) {
         mediaItems.add(item);
+    }
+
+    public List<MediaItem> getMediaItems() {
+        return mediaItems;
     }
 
     public void list() {
@@ -49,7 +51,7 @@ public class Catalog implements Serializable {
     }
 
     private static void serialize(Object object) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(fileSerializerName);
+        FileOutputStream fileOutputStream = new FileOutputStream(FILE_SERIALIZER_NAME);
         ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
 
         outputStream.writeObject(object);
@@ -61,7 +63,7 @@ public class Catalog implements Serializable {
     private static Object deserialize() throws IOException, ClassNotFoundException {
         Object object;
 
-        FileInputStream fileInputStream = new FileInputStream(fileSerializerName);
+        FileInputStream fileInputStream = new FileInputStream(FILE_SERIALIZER_NAME);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
         object = objectInputStream.readObject();
@@ -73,7 +75,7 @@ public class Catalog implements Serializable {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(Color.YELLOW_BOLD).append("The catalog contains the following files:\n\n").append(Color.RESET);
+        stringBuilder.append("The catalog contains the following files:\n\n");
 
         mediaItems.forEach(mediaItem -> {
             List<String> metadataList = mediaItem.getMetadata();
@@ -108,6 +110,9 @@ public class Catalog implements Serializable {
         Catalog catalogLoaded = null;
         String commandMessage = "";
 
+        System.out.println("");
+        System.out.println(Color.BLUE_BOLD + "This is the catalog shell. Enter exit close it." + Color.RESET);
+
         while (true) {
             String command = "";
             command = scanner.nextLine().trim();
@@ -135,18 +140,20 @@ public class Catalog implements Serializable {
             } else if (args[0].equals("save")) {
                 shellCommand = new SaveCommand();
                 commandMessage = "This catalog was saved";
-            } else if (!args[0].equals("load")) {
+            } else if(args[0].equals("info")) {
+                shellCommand = new InfoCommand();
+                commandMessage = "The catalog metadata displayed successfully";
+            } else if (args[0].equals("load")) {
+                shellCommand = new LoadCommand();
+                commandMessage = "The catalog was fetched";
+            } else if(args[0].equals("report")) {
+                shellCommand = new ReportCommand();
+                commandMessage = "The report successfully generated";
+            } else {
                 throw new InvalidCommandException(Color.RED_BOLD + "Invalid command" + Color.RESET);
             }
 
-            if (shellCommand != null) {
-                shellCommand.run(args, this);
-            }
-
-            if (args[0].equals("load")) {
-                catalogLoaded = (new LoadCommand()).run(args);
-                commandMessage = "The catalog was fetched";
-            }
+            catalogLoaded = shellCommand.run(args, this);
 
             System.out.println(Color.YELLOW_BOLD + commandMessage + Color.RESET);
             System.out.println("");

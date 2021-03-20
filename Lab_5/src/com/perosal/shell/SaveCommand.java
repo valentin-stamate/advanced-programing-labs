@@ -7,11 +7,13 @@ import java.io.IOException;
 
 public class SaveCommand implements ShellCommand{
     @Override
-    public void run(String[] args, Catalog catalog) throws InvalidCommandException, IOException {
+    public Catalog run(String[] args, Catalog catalog) throws InvalidCommandException, IOException {
         if (args.length != 1) {
             throw new InvalidCommandException(Color.RED_BOLD + "[Save]Invalid command" + Color.RESET);
         }
 
         catalog.save();
+
+        return null;
     }
 }

@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OtherFile extends MediaItem{
-    private static final String[] arrayExtension = {".pdf", ".txt", ".zip", ".rar", ".7zip"};
-    private static final List<String> supportedFormats = new ArrayList<>(Arrays.asList(arrayExtension));
+    private static final String[] ARRAY_EXTENSION = {".pdf", ".txt", ".zip", ".rar", ".7zip"};
+    private static final List<String> SUPPORTED_FORMATS = new ArrayList<>(Arrays.asList(ARRAY_EXTENSION));
 
     public OtherFile(File file) throws InvalidPathException {
-        super(file, supportedFormats);
+        super(file, SUPPORTED_FORMATS);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class OtherFile extends MediaItem{
     }
 
     public static List<String> getSupportedFormats() {
-        return supportedFormats;
+        return SUPPORTED_FORMATS;
     }
 
     public static OtherFile getDummy() throws InvalidPathException {

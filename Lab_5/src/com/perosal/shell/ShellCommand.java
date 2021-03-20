@@ -7,5 +7,5 @@ import com.perosal.media.Catalog;
 import java.io.IOException;
 
 public interface ShellCommand {
-    void run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException, IOException, ClassNotFoundException;
+    Catalog run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException, IOException, ClassNotFoundException;
 }

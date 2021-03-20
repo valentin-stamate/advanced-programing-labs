@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class PlayCommand implements ShellCommand{
     @Override
-    public void run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException, IOException {
+    public Catalog run(String[] args, Catalog catalog) throws InvalidCommandException, InvalidPathException, IOException {
         if (args.length != 2) {
             throw new InvalidCommandException(Color.RED_BOLD + "[Play]" + Color.RESET);
         }
@@ -20,5 +20,7 @@ public class PlayCommand implements ShellCommand{
         MediaItem mediaItem = Catalog.getMediaItemFromFile(file);
 
         Catalog.play(mediaItem);
+
+        return null;
     }
 }

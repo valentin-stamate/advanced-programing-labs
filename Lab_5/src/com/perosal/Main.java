@@ -7,16 +7,7 @@ import com.perosal.media.items.Image;
 import com.perosal.media.items.MediaItem;
 import com.perosal.media.items.OtherFile;
 import com.perosal.media.items.Song;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.txt.TXTParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.xml.sax.SAXException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -24,37 +15,21 @@ public class Main {
     private static final String mediaPath = "media";
 
     public static void main(String[] args) {
-        compulsory(); // + optional
+        compulsory(); // + optional + fist bonus point
         bonus();
+
     }
 
     private static void bonus() {
         System.out.println(Color.BLUE_BOLD + "----==== Bonus ====----" + Color.RESET);
 
-        BodyContentHandler handler   = new BodyContentHandler();
-        TXTParser parser             = new TXTParser();
-        Metadata metadata            = new Metadata();
-        ParseContext pcontext        = new ParseContext();
+        System.out.println("");
 
-        try (InputStream stream = AutoDetectParseExample.class.getResourceAsStream("catalog.ser")) {
-            parser.parse(stream, handler, metadata, pcontext);
-            System.out.println("Document Content:" + handler.toString());
-            System.out.println("Document Metadata:");
-            String[] metadatas = metadata.names();
-            for(String data : metadatas) {
-                System.out.println(data + ":   " + metadata.get(data));
-            }
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-        File file = new File("media");
-
-        int graphLength = 75;
+        int graphLength = 33;
 
         List<MediaItem> mediaItemsRow = new ArrayList<>(graphLength);
 
-        for (int i = 1; i <= 25; i++) {
+        for (int i = 1; i <= 11; i++) {
             try {
                 mediaItemsRow.add(Image.getDummy());
                 mediaItemsRow.add(OtherFile.getDummy());
@@ -165,7 +140,7 @@ public class Main {
         System.out.println("");
         System.out.println(catalogB);
 
-        System.out.println(Color.YELLOW_BOLD + "----==== Compulsory ====----" + Color.RESET);
+        System.out.println(Color.YELLOW_BOLD + "----==== Optional ====----" + Color.RESET);
         Catalog catalogC = null;
 
         try {
@@ -177,6 +152,7 @@ public class Main {
         if (catalogC != null) {
             System.out.println(catalogC);
         }
+
     }
 
     private static void showGraph(boolean[][] graph) {
@@ -208,27 +184,6 @@ public class Main {
                 e.printStackTrace();
             }
             mediaList.add(mediaItem);
-        }
-    }
-
-}
-
-class AutoDetectParseExample {
-    public static void main(String[] args) {
-        try {
-            System.out.println(parseToPlainText());
-        } catch (IOException | SAXException | TikaException e) {
-            e.printStackTrace();
-        }
-    }
-    public static String parseToPlainText() throws IOException, SAXException, TikaException {
-        BodyContentHandler handler = new BodyContentHandler();
-
-        AutoDetectParser parser = new AutoDetectParser();
-        Metadata metadata = new Metadata();
-        try (InputStream stream = AutoDetectParseExample.class.getResourceAsStream("Hello.txt")) {
-            parser.parse(stream, handler, metadata);
-            return handler.toString();
         }
     }
 }

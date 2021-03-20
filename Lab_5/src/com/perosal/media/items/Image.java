@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Image extends MediaItem {
-    private static final String[] arrayExtension = {".img", ".png"};
-    private static final List<String> supportedFormats = new ArrayList<>(Arrays.asList(arrayExtension));
+    private static final String[] ARRAY_EXTENSION = {".img", ".png"};
+    private static final List<String> SUPPORTED_FORMATS = new ArrayList<>(Arrays.asList(ARRAY_EXTENSION));
 
     public Image(File file) throws InvalidPathException {
-        super(file, supportedFormats);
+        super(file, SUPPORTED_FORMATS);
     }
 
     public static List<String> getSupportedTypes() {
-        return supportedFormats;
+        return SUPPORTED_FORMATS;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Image extends MediaItem {
     }
 
     public static List<String> getSupportedFormats() {
-        return supportedFormats;
+        return SUPPORTED_FORMATS;
     }
 
     public static Image getDummy() throws InvalidPathException {

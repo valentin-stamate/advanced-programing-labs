@@ -35,6 +35,16 @@ public abstract class MediaItem implements Serializable {
         return fileMedata;
     }
 
+    public String getMetadataAsString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        getMetadata().forEach(fileMedata -> {
+            stringBuilder.append(fileMedata).append("\n");
+        });
+
+        return stringBuilder.toString();
+    }
+
     public String getPath() {
         return file.getPath();
     }
