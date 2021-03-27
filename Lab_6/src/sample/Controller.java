@@ -60,7 +60,7 @@ public class Controller implements Initializable {
     private boolean drawingThreadRunning = true;
 
     List<Shape> shapes;
-    Shape lastFreeDrawingShape;
+    FreeDrawingShape lastFreeDrawingShape;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -79,6 +79,7 @@ public class Controller implements Initializable {
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, this::onCanvasClick);
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::onCanvasDragged);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, this::onCanvasReleased);
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, this::onMouseMoved);
 
         panel = new Panel(
                 new PanelField(widthLabel, widthTextField),
@@ -137,6 +138,21 @@ public class Controller implements Initializable {
         }
     }
 
+    private void onMouseMoved(MouseEvent mouseEvent) {
+
+        boolean shapeFound = false;
+        for (int i = shapes.size() - 1; i >= 0; i--) {
+            Shape shape = shapes.get(i);
+
+            shape.showOutline(false);
+
+            if (!shapeFound && shape.onSelectEvent((int)mouseEvent.getX(), (int)mouseEvent.getY())) {
+                shape.showOutline(true);
+                shapeFound = true;
+            }
+        }
+    }
+
     private void onCanvasDragged(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseButton.PRIMARY && shapeType == Shape.FREE_SHAPE) {
             lastFreeDrawingShape.addFreeShapePoint((int)mouseEvent.getX(), (int)mouseEvent.getY());
@@ -145,7 +161,7 @@ public class Controller implements Initializable {
 
     private void onCanvasReleased(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseButton.PRIMARY && shapeType == Shape.FREE_SHAPE) {
-            lastFreeDrawingShape.setFreeDrawingWidthAndHeight();
+            lastFreeDrawingShape.finishFreeDrawing();
         }
     }
 
@@ -170,15 +186,7 @@ public class Controller implements Initializable {
     }
 
     private void showShapeType(Shape shape) {
-        if (shape instanceof PacmanShape) {
-            System.out.println("Pacman Shape");
-        } else if (shape instanceof ImageShape) {
-            System.out.println("Image Shape");
-        } else if (shape instanceof PolygonShape) {
-            System.out.println("Polygon Shape");
-        } else if (shape instanceof FreeDrawingShape) {
-            System.out.println("Free Shape");
-        }
+        System.out.println(shape.shapeType());
     }
 
     private void addShape(int x, int y) {
@@ -187,16 +195,18 @@ public class Controller implements Initializable {
 
         Shape shape;
 
+        int width = shapeValues.getWidthValue();
+        int height = shapeValues.getHeightValue();
+        newShapeValues.setPosition(x - width / 2, y - height / 2);
+
         switch (shapeType) {
-            case Shape.PACMAN_SHAPE:
-                shape = new PacmanShape(newShapeValues);
-                break;
-            case Shape.FREE_SHAPE:
+            case Shape.PACMAN_SHAPE -> shape = new PacmanShape(newShapeValues);
+            case Shape.FREE_SHAPE -> {
+                newShapeValues.setPosition(x, y);
                 shape = new FreeDrawingShape(newShapeValues);
-                lastFreeDrawingShape = shape;
-                break;
-            default:
-                shape = new PolygonShape(newShapeValues);
+                lastFreeDrawingShape = (FreeDrawingShape) shape;
+            }
+            default -> shape = new PolygonShape(newShapeValues);
         }
 
         shapes.add(shape);

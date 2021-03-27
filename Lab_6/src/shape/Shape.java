@@ -20,10 +20,10 @@ public abstract class Shape {
         int width = shapeValues.getWidthValue();
         int height = shapeValues.getHeightValue();
 
-        int shapeX = shapeValues.getX() - width / 2;
-        int shapeY = shapeValues.getY() - height / 2;
+        int shapeX = shapeValues.getX();
+        int shapeY = shapeValues.getY();
 
-        return (shapeX < x && shapeX + width > x) && (shapeY < y && shapeY + height > y);
+        return (shapeX <= x && shapeX + width >= x) && (shapeY <= y && shapeY + height >= y);
     }
 
     public void addFreeShapePoint(int x, int y) {
@@ -49,7 +49,16 @@ public abstract class Shape {
             maxY = Math.max(y, maxY);
         }
 
-       shapeValues.setSize(maxX - minX, maxY - minY);
+        shapeValues.setPosition(minX, minY);
+        shapeValues.setSize(maxX - minX, maxY - minY);
 
+    }
+
+    public void showOutline(boolean showOutline) {
+        shapeValues.showOutline(showOutline);
+    }
+
+    public String shapeType() {
+        return shapeValues.getShapeType();
     }
 }

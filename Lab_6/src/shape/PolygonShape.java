@@ -1,6 +1,7 @@
 package shape;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class PolygonShape extends Shape{
 
@@ -18,6 +19,12 @@ public class PolygonShape extends Shape{
         double alpha = 45;
         double angleStep = 360.0 / sides;
 
+        int drawX = shapeValues.getX();
+        int drawY = shapeValues.getY();
+
+        int width = shapeValues.getWidthValue();
+        shapeValues.setPosition(drawX, drawY);
+
         for (int i = 0; i < sides; i++) {
 
             double angleInRadius = toRadius(alpha);
@@ -25,8 +32,8 @@ public class PolygonShape extends Shape{
             double xPlus = radius * Math.cos(angleInRadius);
             double yPlus = radius * Math.sin(angleInRadius);
 
-            int x = shapeValues.getX() + (int)xPlus;
-            int y = shapeValues.getY() + (int)yPlus;
+            int x = drawX + (int)xPlus + width / 2;
+            int y = drawY + (int)yPlus + width / 2;
 
             pointsX[i] = x;
             pointsY[i] = y;
@@ -37,7 +44,7 @@ public class PolygonShape extends Shape{
         polygonType = ((int)(Math.random() * 1000)) % 2;
 
         shapeValues.setPoints(pointsX, pointsY);
-
+        shapeValues.setShapeType("Polygon with " + sides + " sides");
     }
 
     private double toRadius(double alpha) {
@@ -54,6 +61,13 @@ public class PolygonShape extends Shape{
             graphicsContext.fillPolygon(shapeValues.getPointsX(), shapeValues.getPointsY(), shapeValues.getPointsX().length);
         } else {
             graphicsContext.strokePolygon(shapeValues.getPointsX(), shapeValues.getPointsY(), shapeValues.getPointsX().length);
+        }
+
+        graphicsContext.setLineWidth(1);
+        graphicsContext.setStroke(Color.BLACK);
+
+        if (shapeValues.getShowOutline()) {
+            graphicsContext.strokeRect(shapeValues.getX(), shapeValues.getY(), shapeValues.getWidthValue(), shapeValues.getHeightValue());
         }
     }
 }

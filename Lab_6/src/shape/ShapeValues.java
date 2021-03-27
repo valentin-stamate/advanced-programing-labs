@@ -27,6 +27,9 @@ public class ShapeValues {
     private int[] freePointsX;
     private int[] freePointsY;
     private int freePointsNumber = 0;
+    private boolean showOutline = false;
+
+    private String shapeType;
 
     public ShapeValues() {
         this.fillColor = getRandomColor();
@@ -46,6 +49,14 @@ public class ShapeValues {
         freePointsY = new int[10000];
     }
 
+    public String getShapeType() {
+        return shapeType;
+    }
+
+    protected void setShapeType(String shapeType) {
+        this.shapeType = shapeType;
+    }
+
     public int[] getFreePointsX() {
         return freePointsX;
     }
@@ -63,6 +74,14 @@ public class ShapeValues {
         newShapeValues.updateValues(widthValue, heightValue, strokeValue, sidesValue);
 
         return newShapeValues;
+    }
+
+    public void showOutline(boolean showOutline) {
+        this.showOutline = showOutline;
+    }
+
+    public boolean getShowOutline() {
+        return showOutline;
     }
 
     public void setPoints(double[] pointsX, double[] pointsY) {
