@@ -1,4 +1,4 @@
-package sample;
+package sample.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -43,15 +43,16 @@ public class Token extends Thread{
         }
         graphicsContext.setStroke(Color.WHITE);
 
-        int x = tokenCount * gameData.getPlayerBoxSize();
-        int y = 0;
-
         int boxSize = gameData.getPlayerBoxSize();
+
+        int x = (tokenCount % gameData.getPlayerNumber()) * gameData.getPlayerBoxSize();
+        double yPos = (1.0 * tokenCount) / (1.0 * gameData.getPlayerNumber());
+        int y = ((int)yPos) * boxSize + 25;
 
         graphicsContext.fillRect( x, y, boxSize, boxSize);
         graphicsContext.strokeRect( x, y, boxSize, boxSize);
 
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.fillText("(" + i + ", " + j + ")", x, (int)(y + boxSize / 2));
+        graphicsContext.fillText("(" + i + ", " + j + ")", x + (int)(boxSize / 2) - 10, (int)(y + boxSize / 2));
     }
 }

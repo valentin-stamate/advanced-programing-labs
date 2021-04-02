@@ -1,7 +1,6 @@
-package sample;
+package sample.game;
 
 import javafx.scene.paint.Color;
-
 import java.util.List;
 
 public class GameData {
@@ -37,10 +36,6 @@ public class GameData {
         gameRunning = true;
     }
 
-    public boolean getRunningStatus() {
-        return gameRunning;
-    }
-
     public int getPlayerNumber() {
         return playerNumber;
     }
@@ -70,4 +65,11 @@ public class GameData {
         return random + start;
     }
 
+    public boolean isGameFinished() {
+        return !gameRunning;
+    }
+
+    public void finishGame() {
+        gameRunning = false;
+    }
 }
