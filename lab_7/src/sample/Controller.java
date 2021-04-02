@@ -72,7 +72,7 @@ public class Controller implements Initializable {
             playerList.add(new Player(i, gameData, graphicsContext));
         }
 
-        for (int i = 0; i < playerNumber * 3; i++) {
+        for (int i = 0; i < playerNumber * 5; i++) {
             int randomI = GameData.randomInt(0, playerNumber);
             int randomJ = GameData.randomInt(0, playerNumber);
             Token token = new Token(randomI, randomJ, i, gameData, graphicsContext);
@@ -94,12 +94,12 @@ public class Controller implements Initializable {
     private void setPlayers(int playerNumber) {
         gameData.setPlayerNumber(playerNumber);
 
-        if (playerNumber > 20) {
-            gameData.setPlayerNumber(20);
+        if (playerNumber > 50) {
+            gameData.setPlayerNumber(50);
         }
 
-        if (playerNumber < 10) {
-            gameData.setPlayerNumber(10);
+        if (playerNumber < 20) {
+            gameData.setPlayerNumber(20);
         }
 
         this.playerNumberLabel.setText("Players: " + gameData.getPlayerNumber());
