@@ -2,6 +2,7 @@ package sample.game;
 
 import javafx.scene.paint.Color;
 import java.util.List;
+import java.util.Map;
 
 public class GameData {
     private boolean gameRunning = false;
@@ -11,8 +12,7 @@ public class GameData {
     private final int canvasWidth;
     private final int canvasHeight;
     private final List<Token> tokenList;
-
-    private boolean pickingInProgress = false;
+    private List<Player> playerList;
 
     public GameData(int canvasWidth, int canvasHeight, List<Token> tokenList) {
         this.canvasWidth = canvasWidth;
@@ -20,16 +20,12 @@ public class GameData {
         this.tokenList = tokenList;
     }
 
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
+    }
+
     public List<Token> getTokenList() {
         return tokenList;
-    }
-
-    public void setPickingProgress(boolean pickingInProgress) {
-        this.pickingInProgress = pickingInProgress;
-    }
-
-    public boolean getPickingProgress() {
-        return pickingInProgress;
     }
 
     public void startGame() {
@@ -71,5 +67,9 @@ public class GameData {
 
     public void finishGame() {
         gameRunning = false;
+    }
+
+    public List<Player> getPlayerList() {
+        return playerList;
     }
 }

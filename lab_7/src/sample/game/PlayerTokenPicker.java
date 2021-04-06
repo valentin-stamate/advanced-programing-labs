@@ -1,5 +1,6 @@
 package sample.game;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -32,27 +33,39 @@ public class PlayerTokenPicker {
     private Token pickGreedyToken() {
         Player currentPlayer = playerList.get(playerPickingId);
 
-        HashSet<Integer> nodeHashSet = new HashSet<>();
+        List<Token> bestTokens = new ArrayList<>();
 
-        currentPlayer.getTokenList().forEach(token -> {
-            nodeHashSet.add(token.getI());
-            nodeHashSet.add(token.getJ());
-        });
+        for (Player player : playerList) {
+            if (player != currentPlayer) {
+                List<Token> goodTokenList = player.getGoodTokens();
 
-        Token tokenPicked = null;
+                int currentScore = player.getScore();
+                Token playerBestToken = null;
 
-        for (Token token : tokenList) {
-            if (nodeHashSet.contains(token.getI()) || nodeHashSet.contains(token.getJ())) {
-                tokenPicked = token;
-                break;
+                for (Token token : goodTokenList) {
+                    int possibleScore = player.calculatePossibleScore(token);
+
+                    if (possibleScore > currentScore) {
+                        currentScore = possibleScore;
+                        playerBestToken = token;
+                    }
+                }
+
+                if (playerBestToken != null) {
+                    bestTokens.add(playerBestToken);
+                }
             }
         }
 
-        if (tokenPicked == null) {
-            tokenPicked = tokenList.get(GameData.randomInt(0, tokenList.size()));
+        List<Token> currentPlayerBestTokens = currentPlayer.getGoodTokens();
+
+        for (Token token : currentPlayerBestTokens) {
+            if (bestTokens.contains(token)) {
+                return token;
+            }
         }
 
-        return tokenPicked;
+        return null;
     }
 
     public void notifyRandomPlayer() {

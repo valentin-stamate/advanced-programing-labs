@@ -1,12 +1,11 @@
 package sample.game;
 
 import com.github.javafaker.Faker;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Player implements Runnable {
 
@@ -16,44 +15,165 @@ public class Player implements Runnable {
     private final Color playerColor;
     private int score = 0;
     private final String playerName;
-
-    private boolean isWinner = false;
-
-    private boolean isChoosing = false;
-
     private final List<Token> playerTokenList;
 
+    private boolean isWinner = false;
+    private boolean isPicking = false;
     private final int timeToWait;
 
-    public Player(int playerCount, GameData gameData, GraphicsContext graphicsContext) {
+    private Thread playerThread;
+
+    private final PlayerTokenPicker tokenPicker;
+
+    public Player(int playerCount, GameData gameData, GraphicsContext graphicsContext, PlayerTokenPicker tokenPicker) {
         this.gameData = gameData;
         this.graphicsContext = graphicsContext;
         this.playerCount = playerCount;
         this.playerColor = GameData.getRandomColor();
         this.playerTokenList = new ArrayList<>();
+        this.tokenPicker = tokenPicker;
 
         Faker faker = new Faker();
         this.playerName = faker.name().firstName();
-        timeToWait = GameData.randomInt(100, 200);
+        timeToWait = 500;
     }
 
-    public void addToken(Token token, boolean addScore) {
+    public void addToken(Token token) {
         playerTokenList.add(token);
         token.setPicked();
-        if (addScore) {
-            score += token.getI() + token.getJ();
+        score = calculateScore();
+    }
+
+    private int calculateScore() {
+        int length = gameData.getPlayerNumber();
+        int[][] G = initializeGraph();
+        boolean[] visited = new boolean[length];
+
+        int longestCycleLength = 0;
+        for (int i = 0; i < length; i++) {
+            if (!visited[i]) {
+                int cycleLength = dfs(i, G, visited);
+                longestCycleLength = Math.max(longestCycleLength, cycleLength);
+            }
         }
+
+        int tokenSum = getTokenSum();
+
+        if (longestCycleLength == 0) {
+            return tokenSum;
+        }
+
+        return tokenSum * (longestCycleLength / 3 + 1);
+    }
+
+    private int getTokenSum() {
+        int tokenSum = 0;
+
+        for (Token token : playerTokenList) {
+            tokenSum += token.getI();
+            tokenSum += token.getJ();
+        }
+
+        return tokenSum;
+    }
+
+    private int[][] initializeGraph() {
+        int length = gameData.getPlayerNumber();
+        int[][] G = new int[length][length];
+
+        for (Token token : playerTokenList) {
+            int i = token.getI();
+            int j = token.getJ();
+
+            G[i][j] = G[j][i] = 1;
+        }
+
+        return G;
+    }
+
+    private int dfs(int root, int[][] G, boolean[] visited) {
+        int length = G.length;
+
+        Stack<Integer> stack = new Stack<>();
+        Stack<Integer> visitingOrder = new Stack<>();
+        stack.add(root);
+
+        int longestCycleLength = 0;
+
+        while (!stack.empty()) {
+            int n = stack.pop();
+            visited[n] = true;
+            visitingOrder.push(n);
+
+            for (int j = 0; j < length; j++) {
+                if (G[n][j] == 1) {
+                    if (!visited[j]) {
+                        stack.push(j);
+                    } else {
+                        Stack<Integer> visitingOrderCopy = new Stack<>();
+                        Collections.copy(visitingOrderCopy, visitingOrder);
+
+                        int cycleLength = 0;
+                        while (!visitingOrderCopy.empty()) {
+                            int visitedNode = visitingOrderCopy.pop();
+
+                            cycleLength++;
+
+                            if (visitedNode == j) {
+                                break;
+                            }
+                        }
+
+                        longestCycleLength = Math.max(longestCycleLength, cycleLength);
+                    }
+                }
+            }
+        }
+
+        return longestCycleLength;
+    }
+
+    public int calculatePossibleScore(Token token) {
+        playerTokenList.add(token);
+        int newScore = calculateScore();
+        playerTokenList.remove(token);
+        return newScore;
+    }
+
+    public List<Token> getGoodTokens() {
+        List<Token> goodTokens = new ArrayList<>();
+        List<Token> tokenList = gameData.getTokenList();
+
+        for (Token token : tokenList) {
+            if (tokenIsGood(token)) {
+                goodTokens.add(token);
+            }
+        }
+
+        return goodTokens;
+    }
+
+    private boolean tokenIsGood(Token token) {
+        HashSet<Integer> tokenHashSet = new HashSet<>();
+
+        playerTokenList.forEach(tokenElement -> {
+            tokenHashSet.add(tokenElement.getI());
+            tokenHashSet.add(tokenElement.getJ());
+        });
+
+        return tokenHashSet.contains(token.getI()) || tokenHashSet.contains(token.getJ());
     }
 
     @Override
     public void run() {
 
+        playerThread = Thread.currentThread();
+
         List<Token> tokenList = gameData.getTokenList();
 
-        while (true) {
-            if (gameData.isGameFinished()) {
-                break;
-            }
+        while (!gameData.isGameFinished() && tokenList.size() > 0) {
+
+            Token randomToken = tokenPicker.pickToken();
 
             try {
                 Thread.sleep(timeToWait);
@@ -61,84 +181,22 @@ public class Player implements Runnable {
                 e.printStackTrace();
             }
 
-            if (tokenList.size() > 0 && !gameData.getPickingProgress()) {
-
-                gameData.setPickingProgress(true);
-                isChoosing = true;
-
-                Token randomToken = pickSmartToken();
-
-                if (randomToken == null) {
-                    continue;
-                }
-
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+            if (randomToken != null) {
+                addToken(randomToken);
                 tokenList.remove(randomToken);
-
-                isChoosing = false;
-                gameData.setPickingProgress(false);
-
             }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 
-    private Token pickRandomToken() {
-        List<Token> tokenList = gameData.getTokenList();
-        int randomTokenIndex = GameData.randomInt(0, tokenList.size() - 1);
-
-        Token tokenPicked = tokenList.get(randomTokenIndex);
-
-        addToken(tokenPicked, true);
-
-        return tokenPicked;
-    }
-
-    private Token pickSmartToken() {
-        List<Token> tokenList = gameData.getTokenList();
-
-        HashSet<Integer> nodeHashSet = new HashSet<>();
-
-        playerTokenList.forEach(token -> {
-            nodeHashSet.add(token.getI());
-            nodeHashSet.add(token.getJ());
-        });
-
-        Token tokenPicked = null;
-
-        for (Token token : tokenList) {
-            if (nodeHashSet.contains(token.getI()) || nodeHashSet.contains(token.getJ())) {
-                tokenPicked = token;
-                break;
-            }
-        }
-
-        if (tokenPicked == null) {
-            tokenPicked = tokenList.get(0);
-            addToken(tokenPicked, false);
-        } else {
-            addToken(tokenPicked, true);
-        }
-
-        return tokenPicked;
+    public Thread getPlayerThread() {
+        return playerThread;
     }
 
     public void draw() {
 
         graphicsContext.setFill(playerColor);
 
-        if (isChoosing) {
+        if (isPicking) {
             graphicsContext.setFill(Color.rgb(100, 100, 100));
         }
 
@@ -167,5 +225,9 @@ public class Player implements Runnable {
 
     public void makeWinner() {
         isWinner = true;
+    }
+
+    public List<Token> getTokenList() {
+        return playerTokenList;
     }
 }

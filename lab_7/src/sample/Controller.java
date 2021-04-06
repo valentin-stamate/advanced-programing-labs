@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import sample.game.GameData;
 import sample.game.Player;
+import sample.game.PlayerTokenPicker;
 import sample.game.Token;
 import sample.timekeeper.TimeKeeper;
 
@@ -68,9 +69,16 @@ public class Controller implements Initializable {
 
         int playerNumber = gameData.getPlayerNumber();
 
+        PlayerTokenPicker tokenPicker = new PlayerTokenPicker();
+
         for (int i = 0; i < playerNumber; i++) {
-            playerList.add(new Player(i, gameData, graphicsContext));
+            playerList.add(new Player(i, gameData, graphicsContext, tokenPicker));
         }
+
+        tokenPicker.setPlayerList(playerList);
+        tokenPicker.setTokenList(tokenList);
+
+        gameData.setPlayerList(playerList);
 
         for (int i = 0; i < playerNumber * 5; i++) {
             int randomI = GameData.randomInt(0, playerNumber);
@@ -86,6 +94,14 @@ public class Controller implements Initializable {
         });
 
         gameData.startGame();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        tokenPicker.notifyRandomPlayer();
 
         new Thread(timeKeeper).start();
         new Thread(this::drawShapes).start();
