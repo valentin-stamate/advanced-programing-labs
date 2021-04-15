@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="DatabaseTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-15T15:18:52" hostname="DESKTOP-45AJMKJ" time="0.459">
+  <properties/>
+  <testcase name="insertMovie()" classname="DatabaseTest" time="0.459"/>
+  <system-out><![CDATA[Movie Movie{title='Avatar', release_date=2021-04-15 18:18:52.103, duration='1h', score=10.0} inserted into database
+MovieGenre MovieGenres{movieId=17, genreId=1} inserted into database
+MovieGenre MovieGenres{movieId=17, genreId=2} inserted into database
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

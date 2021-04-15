@@ -1,0 +1,24 @@
+database/DatabaseRunner.java
+ database.DatabaseRunner
+database/dao/Dao.java
+ database.dao.Dao
+database/singleton/DatabaseConnection.java
+ database.singleton.DatabaseConnection
+database/singleton/DatabaseStatement.java
+ database.singleton.DatabaseStatement
+database/singleton/ErrorMessage.java
+ database.singleton.ErrorMessage
+MainClass.java
+ MainClass
+database/models/Movie.java
+ database.models.Movie
+database/dao/MovieDao.java
+ database.dao.MovieDao
+database/models/MovieGenre.java
+ database.models.MovieGenre
+database/models/Genre.java
+ database.models.Genre
+database/dao/GenreDao.java
+ database.dao.GenreDao
+database/dao/MovieGenreDao.java
+ database.dao.MovieGenreDao

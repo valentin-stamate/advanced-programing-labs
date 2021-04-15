@@ -1,0 +1,3 @@
+uMovie Movie{title='Avatar', release_date=2021-04-15 18:18:52.103, duration='1h', score=10.0} inserted into database
+FMovieGenre MovieGenres{movieId=17, genreId=1} inserted into database
+FMovieGenre MovieGenres{movieId=17, genreId=2} inserted into database
