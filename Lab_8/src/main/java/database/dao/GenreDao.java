@@ -2,9 +2,11 @@ package database.dao;
 
 import database.DatabaseRunner;
 import database.models.Genre;
+import database.models.Movie;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenreDao implements Dao<Genre> {
@@ -64,4 +66,29 @@ public class GenreDao implements Dao<Genre> {
         return genre;
     }
 
+    public List<Genre> getTopGenres() {
+        List<Genre> topGenres = new ArrayList<>();
+
+        String sql = "SELECT COUNT(mg.id_movie) movie_count, g.name FROM movie_genres mg JOIN genres g on mg.id_genre = g.id GROUP BY g.name ORDER BY movie_count DESC LIMIT 10";
+
+        ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
+
+        try {
+            if (resultSet == null) {
+                return null;
+            }
+
+            while (resultSet.next()) {
+                Genre genre = new Genre(resultSet.getInt(1),
+                        resultSet.getString(2));
+                topGenres.add(genre);
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return topGenres;
+    }
 }

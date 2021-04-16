@@ -12,6 +12,8 @@ repositories {
 dependencies {
     implementation 'org.postgresql:postgresql:42.2.19'
     implementation 'com.opencsv:opencsv:5.4'
+    implementation 'org.freemarker:freemarker:2.3.31'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }

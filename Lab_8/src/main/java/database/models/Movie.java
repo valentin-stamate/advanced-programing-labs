@@ -1,7 +1,5 @@
 package database.models;
 
-import java.sql.Timestamp;
-
 public class Movie {
     private int id;
     private String idMovie;
@@ -9,21 +7,25 @@ public class Movie {
     private String releaseDate;
     private String duration;
     private float score;
+    private int votes;
 
-    public Movie(int id, String idMovie, String title, String releaseDate, String duration, float score) {
+    public Movie(int id, String idMovie, String title, String releaseDate, String duration, float score, int votes) {
         this.id = id;
         this.idMovie =  idMovie;
         this.title = title;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.score = score;
+        this.votes = votes;
     }
-    public Movie(String idMovie, String title, String releaseDate, String duration, float score) {
+
+    public Movie(String idMovie, String title, String releaseDate, String duration, float score, int votes) {
         this.title = title;
         this.idMovie = idMovie;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.score = score;
+        this.votes = votes;
     }
 
     public int getId() {
@@ -74,6 +76,14 @@ public class Movie {
         this.idMovie = idMovie;
     }
 
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -83,6 +93,7 @@ public class Movie {
                 ", releaseDate='" + releaseDate + '\'' +
                 ", duration='" + duration + '\'' +
                 ", score=" + score +
+                ", votes=" + votes +
                 '}';
     }
 }

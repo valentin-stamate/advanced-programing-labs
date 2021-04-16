@@ -194,7 +194,7 @@ public abstract class DataSetParser {
 
     private static Movie rowToMovie(String[] row) {
         normalizeStringArray(row);
-        return new Movie(row[0], row[1], row[4], row[6], Float.parseFloat(row[14]));
+        return new Movie(row[0], row[1], row[4], row[6], Float.parseFloat(row[14]), Integer.parseInt(row[15]));
     }
 
     private static void normalizeStringArray(String[] row) {
@@ -204,7 +204,7 @@ public abstract class DataSetParser {
     }
 
     private static String normalizeString(String s) {
-        return s.replaceAll("\\s+", " ").trim();
+        return s.replaceAll("\\s+", " ").trim().replaceAll("'", "''");
     }
 
 }

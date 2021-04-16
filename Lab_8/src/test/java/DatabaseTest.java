@@ -24,7 +24,7 @@ public class DatabaseTest {
         GenreDao genreDao = new GenreDao();
         MovieGenreDao movieGenreDao = new MovieGenreDao();
 
-        Movie movie = new Movie("tt110110", "Avatar", new Timestamp(new Date().getTime()).toString(), "1h", 10);
+        Movie movie = new Movie("tt110110", "Avatar", new Timestamp(new Date().getTime()).toString(), "1h", 10, 10);
         movieDao.add(movie);
 
         Genre genreA = new Genre("drama");
@@ -69,7 +69,7 @@ public class DatabaseTest {
 
     @Test
     public void trimTest() {
-        Assertions.assertEquals("John Wich", "   John     Wich   ".replaceAll("\\s+", " ").trim());
+        Assertions.assertEquals("John ''Wich", "   John     'Wich   ".replaceAll("\\s+", " ").trim().replaceAll("'", "''"));
     }
 
 }

@@ -1,0 +1,48 @@
+database/models/MovieActor.java
+ database.models.MovieActor
+database/models/Genre.java
+ database.models.Genre
+database/dao/MovieGenreDao.java
+ database.dao.MovieGenreDao
+database/singleton/DatabaseStatement.java
+ database.singleton.DatabaseStatement
+database/dao/MovieActorsDao.java
+ database.dao.MovieActorsDao
+database/models/MovieDirector.java
+ database.models.MovieDirector
+database/singleton/ErrorMessage.java
+ database.singleton.ErrorMessage
+database/singleton/DatabaseConnection.java
+ database.singleton.DatabaseConnection
+database/models/Actor.java
+ database.models.Actor
+database/dao/Dao.java
+ database.dao.Dao
+database/models/Director.java
+ database.models.Director
+database/models/MovieGenre.java
+ database.models.MovieGenre
+database/DatabaseRunner.java
+ database.DatabaseRunner
+database/dao/instances/ActorActivity.java
+ database.dao.instances.ActorActivity
+database/dao/ActorDao.java
+ database.dao.ActorDao
+database/dao/MovieDirectorDao.java
+ database.dao.MovieDirectorDao
+database/dao/DirectorsDao.java
+ database.dao.DirectorsDao
+database/dao/GenreDao.java
+ database.dao.GenreDao
+database/dao/MovieDirectors.java
+ database.dao.MovieDirectors
+database/models/Movie.java
+ database.models.Movie
+MainClass.java
+ MainClass
+dataset/DataSetParser.java
+ dataset.DataSetParser
+database/dataset_statistics/DatasetStatistics.java
+ database.dataset_statistics.DatasetStatistics
+database/dao/MovieDao.java
+ database.dao.MovieDao
