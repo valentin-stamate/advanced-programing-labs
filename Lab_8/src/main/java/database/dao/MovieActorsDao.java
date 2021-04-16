@@ -8,7 +8,7 @@ import java.util.List;
 public class MovieActorsDao implements Dao<MovieActor> {
     @Override
     public void add(MovieActor movieActor) {
-        String sql = String.format("INSERT INTO movie_actors(id_movie, id_actor) VALUES(%d, %d)", movieActor.getMovieId(), movieActor.getActorId());
+        String sql = String.format("INSERT INTO movie_actors(id_movie, id_actor) VALUES('%s', %d)", movieActor.getMovieId(), movieActor.getActorId());
 
         if (DatabaseRunner.getInstance().runSql(sql)) {
             System.out.println("MovieActor " + movieActor + " inserted into database");

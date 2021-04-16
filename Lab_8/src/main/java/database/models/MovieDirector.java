@@ -1,19 +1,19 @@
 package database.models;
 
 public class MovieDirector {
-    private int movieId;
+    private String movieId;
     private int directorId;
 
-    public MovieDirector(int movieId, int directorId) {
+    public MovieDirector(String movieId, int directorId) {
         this.movieId = movieId;
         this.directorId = directorId;
     }
 
-    public int getMovieId() {
+    public String getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
+    public void setMovieId(String movieId) {
         this.movieId = movieId;
     }
 

@@ -50,7 +50,8 @@ public class DatabaseRunner {
         try {
             statement.executeUpdate(sql);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            /* TODO handle somehow the error */
+//            throwables.printStackTrace();
             return false;
         }
 
@@ -67,7 +68,8 @@ public class DatabaseRunner {
         try {
             resultSet = statement.executeQuery(sql);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            /* TODO handle error if needed */
+//            throwables.printStackTrace();
         }
 
         return resultSet;

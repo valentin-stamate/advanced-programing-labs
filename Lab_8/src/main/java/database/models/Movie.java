@@ -4,21 +4,24 @@ import java.sql.Timestamp;
 
 public class Movie {
     private int id;
+    private String idMovie;
     private String title;
-    private Timestamp release_date;
+    private String releaseDate;
     private String duration;
     private float score;
 
-    public Movie(int id, String title, Timestamp release_date, String duration, float score) {
+    public Movie(int id, String idMovie, String title, String releaseDate, String duration, float score) {
         this.id = id;
+        this.idMovie =  idMovie;
         this.title = title;
-        this.release_date = release_date;
+        this.releaseDate = releaseDate;
         this.duration = duration;
         this.score = score;
     }
-    public Movie(String title, Timestamp release_date, String duration, float score) {
+    public Movie(String idMovie, String title, String releaseDate, String duration, float score) {
         this.title = title;
-        this.release_date = release_date;
+        this.idMovie = idMovie;
+        this.releaseDate = releaseDate;
         this.duration = duration;
         this.score = score;
     }
@@ -39,12 +42,12 @@ public class Movie {
         this.title = title;
     }
 
-    public Timestamp getRelease_date() {
-        return release_date;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setRelease_date(Timestamp release_date) {
-        this.release_date = release_date;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public String getDuration() {
@@ -63,14 +66,23 @@ public class Movie {
         this.score = score;
     }
 
+    public String getIdMovie() {
+        return idMovie;
+    }
+
+    public void setIdMovie(String idMovie) {
+        this.idMovie = idMovie;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
-                "title='" + title + '\'' +
-                ", release_date=" + release_date +
+                "id=" + id +
+                ", idMovie='" + idMovie + '\'' +
+                ", title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
                 ", duration='" + duration + '\'' +
                 ", score=" + score +
                 '}';
     }
-
 }

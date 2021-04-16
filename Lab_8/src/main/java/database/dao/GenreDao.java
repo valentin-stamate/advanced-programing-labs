@@ -17,6 +17,24 @@ public class GenreDao implements Dao<Genre> {
         }
     }
 
+    public void addIfNotExists(Genre genre) {
+        String sql = String.format("SELECT * FROM genres WHERE name = '%s'", genre.getName());
+
+        ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
+
+        try {
+            if (resultSet == null) {
+                return;
+            }
+
+            if (!resultSet.next()) {
+                add(genre);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     @Override
     public List<Genre> getAll() {
         return null;
@@ -30,6 +48,10 @@ public class GenreDao implements Dao<Genre> {
         ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
 
         try {
+            if (resultSet == null) {
+                return null;
+            }
+
             if (!resultSet.next()) {
                 return null;
             }
