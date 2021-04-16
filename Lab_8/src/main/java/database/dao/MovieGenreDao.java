@@ -9,7 +9,7 @@ public class MovieGenreDao implements Dao<MovieGenre> {
 
     @Override
     public void add(MovieGenre movieGenre) {
-        String sql = String.format("INSERT INTO movie_genres(movie_id, genre_id) VALUES(%d, %d)", movieGenre.getMovieId(), movieGenre.getGenreId());
+        String sql = String.format("INSERT INTO movie_genres(id_movie, id_genre) VALUES(%d, %d)", movieGenre.getMovieId(), movieGenre.getGenreId());
 
         if (DatabaseRunner.getInstance().runSql(sql)) {
             System.out.println("MovieGenre " + movieGenre + " inserted into database");

@@ -42,7 +42,7 @@ public class DatabaseRunner {
         return true;
     }
 
-    public boolean runSql(final String sql) {
+    public boolean runSql(String sql) {
         if (!init()) {
             return false;
         }
@@ -57,7 +57,7 @@ public class DatabaseRunner {
         return true;
     }
 
-    public ResultSet getSqlResult(final String sql) {
+    public ResultSet getSqlResult(String sql) {
         if (!init()) {
             return null;
         }
