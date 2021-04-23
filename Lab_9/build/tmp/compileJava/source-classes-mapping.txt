@@ -1,0 +1,12 @@
+repository/Manager.java
+ repository.Manager
+Main.java
+ Main
+entities/Chart.java
+ entities.Chart
+entities/Movie.java
+ entities.Movie
+dao/MovieDao.java
+ dao.MovieDao
+repository/MovieRepository.java
+ repository.MovieRepository
