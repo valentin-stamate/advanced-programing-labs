@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestUnit" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-23T12:13:44" hostname="DESKTOP-45AJMKJ" time="1.454">
+<testsuite name="TestUnit" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-24T05:51:08" hostname="DESKTOP-45AJMKJ" time="1.49">
   <properties/>
-  <testcase name="addMovie()" classname="TestUnit" time="1.454"/>
+  <testcase name="addMovie()" classname="TestUnit" time="1.49"/>
   <system-out><![CDATA[Hibernate: 
     
     alter table charts_movies 
@@ -60,6 +60,10 @@ Hibernate:
        add constraint UK_rs1f69fjc2lp8o0i15ses0tse unique (id_movie)
 Hibernate: 
     
+    alter table movies 
+       add constraint UK_govm2dombrdnujupo3o7hvtep unique (title)
+Hibernate: 
+    
     alter table charts_movies 
        add constraint FKhqyuwrce118nc0tjboavsfg1l 
        foreign key (movieList_id) 
@@ -104,7 +108,7 @@ Hibernate:
     from
         movies movie0_ 
     where
-        movie0_.id=1
+        movie0_.id=?
 Movie{id=1, idMovie='tt0417299', title='Avatar: The Last Airbender', releaseDate='February 21, 2005', duration='63 episodes', score=0.0, votes=0}
 Hibernate: 
     select
@@ -118,32 +122,32 @@ Hibernate:
     from
         movies movie0_ 
     where
-        movie0_.id_movie='tt0417299'
+        movie0_.title=?
 [Movie{id=1, idMovie='tt0417299', title='Avatar: The Last Airbender', releaseDate='February 21, 2005', duration='63 episodes', score=0.0, votes=0}]
 ]]></system-out>
-  <system-err><![CDATA[Apr 23, 2021 3:13:44 PM org.hibernate.jpa.internal.util.LogHelper logPersistenceUnitInformation
+  <system-err><![CDATA[Apr 24, 2021 8:51:08 AM org.hibernate.jpa.internal.util.LogHelper logPersistenceUnitInformation
 INFO: HHH000204: Processing PersistenceUnitInfo [name: jpa]
-Apr 23, 2021 3:13:44 PM org.hibernate.Version logVersion
+Apr 24, 2021 8:51:09 AM org.hibernate.Version logVersion
 INFO: HHH000412: Hibernate ORM core version 5.4.30.Final
-Apr 23, 2021 3:13:44 PM org.hibernate.annotations.common.reflection.java.JavaReflectionManager <clinit>
+Apr 24, 2021 8:51:09 AM org.hibernate.annotations.common.reflection.java.JavaReflectionManager <clinit>
 INFO: HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-Apr 23, 2021 3:13:44 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl configure
+Apr 24, 2021 8:51:09 AM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl configure
 WARN: HHH10001002: Using Hibernate built-in connection pool (not for production use!)
-Apr 23, 2021 3:13:44 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
+Apr 24, 2021 8:51:09 AM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
 INFO: HHH10001005: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://localhost:5432/lab_9]
-Apr 23, 2021 3:13:44 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
+Apr 24, 2021 8:51:09 AM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
 INFO: HHH10001001: Connection properties: {password=****, user=postgres}
-Apr 23, 2021 3:13:44 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
+Apr 24, 2021 8:51:09 AM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl buildCreator
 INFO: HHH10001003: Autocommit mode: false
-Apr 23, 2021 3:13:44 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections <init>
+Apr 24, 2021 8:51:09 AM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl$PooledConnections <init>
 INFO: HHH000115: Hibernate connection pool size: 20 (min=1)
-Apr 23, 2021 3:13:44 PM org.hibernate.dialect.Dialect <init>
+Apr 24, 2021 8:51:09 AM org.hibernate.dialect.Dialect <init>
 INFO: HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL9Dialect
-Apr 23, 2021 3:13:45 PM org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl getIsolatedConnection
-INFO: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@2218884e] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
-Apr 23, 2021 3:13:45 PM org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl getIsolatedConnection
-INFO: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@39d7bfe7] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
-Apr 23, 2021 3:13:45 PM org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator initiateService
+Apr 24, 2021 8:51:10 AM org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl getIsolatedConnection
+INFO: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@1127ddbc] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+Apr 24, 2021 8:51:10 AM org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl getIsolatedConnection
+INFO: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@1ba912f0] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+Apr 24, 2021 8:51:10 AM org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator initiateService
 INFO: HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
 ]]></system-err>
 </testsuite>

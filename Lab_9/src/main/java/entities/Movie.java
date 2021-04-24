@@ -4,6 +4,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "movies")
+@NamedQueries({
+        @NamedQuery(name = "Movie.findById", query = "SELECT m FROM Movie m WHERE m.id = :id"),
+        @NamedQuery(name = "Movie.findByName", query = "SELECT m FROM Movie m WHERE m.title = :name")
+})
 public class Movie {
 
     @Id
@@ -12,6 +16,7 @@ public class Movie {
 
     @Column(name = "id_movie", unique = true)
     private String idMovie;
+    @Column(unique = true)
     private String title;
     @Column(name = "release_date")
     private String releaseDate;

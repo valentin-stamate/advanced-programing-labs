@@ -4,9 +4,11 @@ Main.java
  Main
 entities/Chart.java
  entities.Chart
-entities/Movie.java
- entities.Movie
 dao/MovieDao.java
  dao.MovieDao
 repository/MovieRepository.java
  repository.MovieRepository
+repository/AbstractRepository.java
+ repository.AbstractRepository
+entities/Movie.java
+ entities.Movie

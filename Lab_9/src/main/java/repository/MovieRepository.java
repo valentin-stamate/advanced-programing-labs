@@ -1,27 +1,30 @@
 package repository;
 
 import entities.Movie;
-
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public abstract class MovieRepository {
+public abstract class MovieRepository implements AbstractRepository<Movie> {
 
+    @Override
     public void save(Movie movie) {
         Manager.getInstance().saveObject(movie);
     }
 
+    @Override
     public Movie findById(int id) {
-        String sql = String.format("SELECT m FROM Movie m WHERE m.id = %d", id);
-        TypedQuery<Movie> query = Manager.getInstance().getEntityManager().createQuery(sql, Movie.class);
+        TypedQuery<Movie> query = Manager.getInstance().getEntityManager()
+                .createNamedQuery("Movie.findById", Movie.class)
+                .setParameter("id", id);
 
         return query.getSingleResult();
     }
 
-    public List<Movie> findByName(String columnName, String columnValue) {
-        String sql = String.format("SELECT m FROM Movie m WHERE m.%s = '%s'", columnName, columnValue);
-        TypedQuery<Movie> query = Manager.getInstance().getEntityManager().createQuery(sql, Movie.class);
+    @Override
+    public List<Movie> findByName(String name) {
+        TypedQuery<Movie> query = Manager.getInstance().getEntityManager()
+                .createNamedQuery("Movie.findByName", Movie.class)
+                .setParameter("name", name);
 
         return query.getResultList();
     }
