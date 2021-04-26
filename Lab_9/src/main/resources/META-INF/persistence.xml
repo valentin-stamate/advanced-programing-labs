@@ -8,8 +8,8 @@
 <persistence-unit name="jpa">
   <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-  <class>entities.Movie</class>
-  <class>entities.Chart</class>
+  <class>database.models.Movie</class>
+  <class>database.models.Chart</class>
 
   <properties>
     <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />

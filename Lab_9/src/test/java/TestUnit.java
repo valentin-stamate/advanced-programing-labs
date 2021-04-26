@@ -1,13 +1,16 @@
-import dao.MovieDao;
-import entities.Movie;
+
+import database.AbstractRepository;
+import database.RepositoryFactory;
+import database.jdbc.dao.MovieJDBCDao;
+import database.jpa.dao.MovieJPADao;
+import database.models.Movie;
 import org.junit.jupiter.api.Test;
-import repository.Manager;
 
 public class TestUnit {
     @Test
     public void addMovie() {
-        MovieDao movieDao = new MovieDao();
-
+        AbstractRepository<Movie> movieDao = new RepositoryFactory().create(MovieJPADao.getType());
+//        AbstractRepository<Movie> movieDao = new RepositoryFactory().create(MovieJDBCDao.getType());
 
         Movie movie = new Movie("tt0417299", "The Last Airbender", "February 21, 2005", "63 episodes");
         movieDao.save(movie);

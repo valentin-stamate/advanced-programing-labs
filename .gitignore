@@ -4,3 +4,5 @@
 *META-INF
 *.html
 *.class
+build/
+.gradle/
