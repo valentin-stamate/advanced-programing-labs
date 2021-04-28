@@ -2,6 +2,8 @@ package client_server.server;
 
 import client_server.Command;
 import client_server.MessageStreamer;
+import client_server.database.dao.UserDao;
+import client_server.database.models.User;
 import client_server.util.Color;
 
 import java.io.*;
@@ -14,6 +16,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
     private final ServerSocket serverSocket;
     private final ObjectOutputStream outputStream;
     private final ObjectInputStream inputStream;
+    private final UserDao userDao;
 
     public ClientHandler(Socket socket, ServerSocket serverSocket) throws IOException {
         this.serverSocket = serverSocket;
@@ -21,6 +24,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.outputStream.flush();
         this.inputStream = new ObjectInputStream(socket.getInputStream());
+        this.userDao =  new UserDao();
 
         startHandler();
     }
@@ -46,7 +50,12 @@ public class ClientHandler implements Runnable, MessageStreamer {
                 } else if (command.equals(Command.CLIENT_DISCONNECT)) {
                     printMessage("Client disconnected");
                     break;
-                } else {
+                } else if (command.equals(Command.REGISTER)) {
+                    register();
+                } else if (command.equals(Command.LOGIN)) {
+                    login();
+                }
+                else {
                     printMessage("Server received the command " + command);
                 }
             }
@@ -55,6 +64,44 @@ public class ClientHandler implements Runnable, MessageStreamer {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void login() throws IOException, ClassNotFoundException {
+        User user = (User) receive();
+
+        User existingUser = userDao.findByUsername(user.getUsername());
+
+        if (existingUser == null) {
+            send(null);
+            send("User doesn't exist");
+            return;
+        }
+
+        if (!existingUser.getPassword().equals(user.getPassword())) {
+            send(null);
+            send("Wrong password");
+            return;
+        }
+
+        send(existingUser);
+        send("Log in successfully");
+    }
+
+    private void register() throws IOException, ClassNotFoundException {
+        User newUser = (User) receive();
+
+        String errorMessage = "User successfully created. Now you can login";
+
+        if (userDao.findByUsername(newUser.getUsername()) != null) {
+            errorMessage = "Username already taken";
+            send(errorMessage);
+            return;
+        }
+
+        userDao.save(newUser);
+
+        send(errorMessage);
+
     }
 
     private void printMessage(Object o) {
