@@ -75,6 +75,18 @@ public class Client implements Runnable, MessageStreamer {
                         continue;
                     }
                     printMessage("Log in first");
+                } else if (command.equals(Command.SEND_MESSAGE)) {
+                    if (userIsLogged()) {
+                        sendMessage();
+                        continue;
+                    }
+                    printMessage("Log in first");
+                } else if (command.equals(Command.READ_MESSAGES)) {
+                    if (userIsLogged()) {
+                        readMessages();
+                        continue;
+                    }
+                    printMessage("Log in first");
                 }
 
             }
@@ -83,6 +95,25 @@ public class Client implements Runnable, MessageStreamer {
         } catch (IOException | ClassNotFoundException e) {
 //            e.printStackTrace();
         }
+    }
+
+    private void readMessages() throws IOException, ClassNotFoundException {
+        send(userInstance);
+
+        MessageRepresentation[] messages = (MessageRepresentation[]) receive();
+
+        for (MessageRepresentation message : messages) {
+            System.out.printf("    %s -> %s | %s", message.getUserFrom(), message.getMessage(), message.getTimestamp().toString());
+        }
+    }
+
+    private void sendMessage() throws IOException {
+        String userTo = readLine();
+        String message = readLine();
+
+        send(userInstance.getUsername());
+        send(userTo);
+        send(message);
     }
 
     private void showFriends() throws IOException, ClassNotFoundException {

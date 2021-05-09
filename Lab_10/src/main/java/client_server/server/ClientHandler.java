@@ -2,8 +2,11 @@ package client_server.server;
 
 import client_server.Command;
 import client_server.MessageStreamer;
+import client_server.client.MessageRepresentation;
 import client_server.database.dao.FriendShipDao;
+import client_server.database.dao.MessageDao;
 import client_server.database.dao.UserDao;
+import client_server.database.models.Message;
 import client_server.database.models.User;
 import client_server.util.Color;
 import java.io.*;
@@ -64,6 +67,10 @@ public class ClientHandler implements Runnable, MessageStreamer {
                     addFriends();
                 } else if (command.equals(Command.SHOW_FRIENDS)) {
                     showFriends();
+                } else if (command.equals(Command.SEND_MESSAGE)) {
+                    sendMessage();
+                } else if (command.equals(Command.READ_MESSAGES)) {
+                    readMessages();
                 }
                 else {
                     printMessage("Server received the command " + command);
@@ -86,6 +93,39 @@ public class ClientHandler implements Runnable, MessageStreamer {
             }
         }
 
+    }
+
+    private void readMessages() throws IOException, ClassNotFoundException {
+        User user = (User) receive();
+
+        MessageDao messageDao = new MessageDao();
+
+        List<MessageRepresentation> messages = messageDao.getUserMessages(user);
+
+        MessageRepresentation[] messagesRaw = new MessageRepresentation[messages.size()];
+
+        for (int i = 0; i < messages.size(); i++) {
+            messagesRaw[i] = messages.get(i);
+        }
+
+        send(messagesRaw);
+    }
+
+    private void sendMessage() throws IOException, ClassNotFoundException {
+        String usernameFrom = (String) receive();
+        String usernameTo = (String) receive();
+
+        String userMessage = (String) receive();
+
+        UserDao userDao = new UserDao();
+
+        User userFrom = userDao.findByUsername(usernameFrom);
+        User userTo = userDao.findByUsername(usernameTo);
+
+        Message message = new Message(userFrom.getId(), userTo.getId(), userMessage);
+
+        MessageDao messageDao = new MessageDao();
+        messageDao.save(message);
     }
 
     private void showFriends() throws IOException, ClassNotFoundException {

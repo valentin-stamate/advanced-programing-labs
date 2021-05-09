@@ -18,4 +18,5 @@ public class MessageRepository implements Repository<Message>{
     public Message findById(int id) {
         return null;
     }
+
 }

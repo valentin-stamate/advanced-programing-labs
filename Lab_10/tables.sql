@@ -21,13 +21,13 @@ CREATE TABLE friendships(
 
 CREATE TABLE messages(
     id SERIAL,
-    user_ INT NOT NULL,
     user_from INT NOT NULL,
+    user_ INT NOT NULL,
     message VARCHAR(255) NOT NULL,
     time_created TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_) REFERENCES users(id),
-    FOREIGN KEY (user_from) REFERENCES users(id)
+    FOREIGN KEY (user_from) REFERENCES users(id),
+    FOREIGN KEY (user_) REFERENCES users(id)
 );
 
 SELECT * FROM friendships WHERE user_a = 1;
