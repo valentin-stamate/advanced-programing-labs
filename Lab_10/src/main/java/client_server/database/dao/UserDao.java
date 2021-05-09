@@ -8,9 +8,7 @@ import client_server.database.repository.UserRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class UserDao extends UserRepository {
@@ -18,7 +16,7 @@ public class UserDao extends UserRepository {
     public List<User> getFriends(User user) {
         List<User> friendList = new ArrayList<>();
 
-        String sql = String.format("SELECT * FROM friendships WHERE user_a = %d", user.getId());
+        String sql = String.format("SELECT ub.id FROM users ua JOIN friendships f on ua.id = f.user_a AND ua.id=%d JOIN users ub ON f.user_b = ub.id;", user.getId());
 
         ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
 
@@ -26,12 +24,12 @@ public class UserDao extends UserRepository {
 
         try {
             while (resultSet.next()) {
-                user = userDao.findById(resultSet.getInt(3));
+                user = userDao.findById(resultSet.getInt(1));
                 friendList.add(user);
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
 
         return friendList;

@@ -13,7 +13,6 @@ public class DatabaseRunner {
     private static DatabaseRunner databaseRunner = null;
 
     private static Connection connection = null;
-    private static Statement statement = null;
 
     private DatabaseRunner() { }
 
@@ -27,15 +26,9 @@ public class DatabaseRunner {
 
     private boolean init() {
         connection = DatabaseConnection.getInstance().getConnection();
-        statement = DatabaseStatement.getInstance().getStatement(connection);
 
         if (connection == null) {
             DatabaseConnection.getInstance().showError();
-            return false;
-        }
-
-        if (statement == null) {
-            DatabaseStatement.getInstance().showError();
             return false;
         }
 
@@ -48,7 +41,7 @@ public class DatabaseRunner {
         }
 
         try {
-            statement.executeUpdate(sql);
+            DatabaseStatement.getInstance().createStatement(connection).executeUpdate(sql);
         } catch (SQLException throwables) {
 //            throwables.printStackTrace();
             return false;
@@ -65,7 +58,7 @@ public class DatabaseRunner {
         ResultSet resultSet = null;
 
         try {
-            resultSet = statement.executeQuery(sql);
+            resultSet = DatabaseStatement.getInstance().createStatement(connection).executeQuery(sql);
         } catch (SQLException throwables) {
 //            throwables.printStackTrace();
         }
@@ -75,7 +68,6 @@ public class DatabaseRunner {
 
     public void close() {
         DatabaseConnection.getInstance().close();
-        DatabaseStatement.getInstance().close();
     }
 
 }

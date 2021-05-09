@@ -29,3 +29,6 @@ CREATE TABLE messages(
     FOREIGN KEY (user_) REFERENCES users(id),
     FOREIGN KEY (user_from) REFERENCES users(id)
 );
+
+SELECT * FROM friendships WHERE user_a = 1;
+SELECT * FROM messages WHERE

@@ -2,6 +2,7 @@ package client_server.server;
 
 import client_server.Command;
 import client_server.MessageStreamer;
+import client_server.database.dao.FriendShipDao;
 import client_server.database.dao.UserDao;
 import client_server.database.models.User;
 import client_server.util.Color;
@@ -9,6 +10,7 @@ import client_server.util.Color;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler implements Runnable, MessageStreamer {
 
@@ -17,6 +19,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
     private final ObjectOutputStream outputStream;
     private final ObjectInputStream inputStream;
     private final UserDao userDao;
+    private final FriendShipDao friendShipDao;
 
     public ClientHandler(Socket socket, ServerSocket serverSocket) throws IOException {
         this.serverSocket = serverSocket;
@@ -25,6 +28,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
         this.outputStream.flush();
         this.inputStream = new ObjectInputStream(socket.getInputStream());
         this.userDao =  new UserDao();
+        this.friendShipDao = new FriendShipDao();
 
         startHandler();
     }
@@ -54,6 +58,10 @@ public class ClientHandler implements Runnable, MessageStreamer {
                     register();
                 } else if (command.equals(Command.LOGIN)) {
                     login();
+                } else if (command.equals(Command.ADD_FRIENDS)) {
+                    addFriends();
+                } else if (command.equals(Command.SHOW_FRIENDS)) {
+                    showFriends();
                 }
                 else {
                     printMessage("Server received the command " + command);
@@ -64,6 +72,29 @@ public class ClientHandler implements Runnable, MessageStreamer {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showFriends() throws IOException, ClassNotFoundException {
+        User user = (User) receive();
+
+        List<User> friendList = userDao.getFriends(user);
+
+        String[] friendUsernames = new String[friendList.size()];
+
+        for (int i = 0; i < friendList.size(); i++) {
+            friendUsernames[i] = friendList.get(i).getUsername();
+        }
+
+        send(friendUsernames);
+    }
+
+    private void addFriends() throws IOException, ClassNotFoundException {
+        User user = (User) receive();
+        String[] usernames = (String[]) receive();
+
+        userDao.addFriends(user, usernames);
+
+        send("Users added successfully");
     }
 
     private void login() throws IOException, ClassNotFoundException {

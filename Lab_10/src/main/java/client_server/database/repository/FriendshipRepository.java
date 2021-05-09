@@ -5,11 +5,18 @@ import client_server.database.models.Friendship;
 
 public class FriendshipRepository implements Repository<Friendship>{
     @Override
-    public void save(Friendship friendship) {
-        String sql = String.format("INSERT INTO friendships(user_a, user_b) VALUES(%d, %d)", friendship.getUserA(), friendship.getUserB());
+    public void save(Friendship friendship1) {
+        String sql1 = String.format("INSERT INTO friendships(user_a, user_b) VALUES(%d, %d)", friendship1.getUserA(), friendship1.getUserB());
 
-        if (DatabaseRunner.getInstance().runSql(sql)) {
-            System.out.println("Friendship " + friendship + " inserted into database");
+        Friendship friendship2 = new Friendship(friendship1.getUserB(), friendship1.getUserA());
+        String sql2 = String.format("INSERT INTO friendships(user_a, user_b) VALUES(%d, %d)", friendship2.getUserA(), friendship2.getUserB());
+
+        if (DatabaseRunner.getInstance().runSql(sql1)) {
+            System.out.println("Friendship " + friendship1 + " inserted into database");
+        }
+
+        if (DatabaseRunner.getInstance().runSql(sql2)) {
+            System.out.println("Friendship " + friendship2 + " inserted into database");
         }
     }
 

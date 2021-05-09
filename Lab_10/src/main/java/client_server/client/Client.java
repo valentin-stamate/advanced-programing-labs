@@ -5,11 +5,12 @@ import client_server.Command;
 import client_server.database.models.User;
 import client_server.server.Server;
 import client_server.util.Color;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Client implements Runnable, MessageStreamer {
@@ -47,12 +48,24 @@ public class Client implements Runnable, MessageStreamer {
                     String message = (String) receive();
                     printMessage(message);
                     break;
-                } if (command.equals(Command.CLIENT_DISCONNECT)) {
+                } else if (command.equals(Command.CLIENT_DISCONNECT)) {
                     break;
-                } if (command.equals(Command.REGISTER)) {
+                } else if (command.equals(Command.REGISTER)) {
                     register();
-                } if (command.equals(Command.LOGIN)) {
+                } else if (command.equals(Command.LOGIN)) {
                     login();
+                } else if (command.equals(Command.ADD_FRIENDS)) {
+                    if (userIsLogged()) {
+                        addFriends();
+                        continue;
+                    }
+                    printMessage("Log in first");
+                } else if (command.equals(Command.SHOW_FRIENDS)) {
+                    if (userIsLogged()) {
+                        showFriends();
+                        continue;
+                    }
+                    printMessage("Log in first");
                 }
 
             }
@@ -61,6 +74,46 @@ public class Client implements Runnable, MessageStreamer {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showFriends() throws IOException, ClassNotFoundException {
+        send(userInstance);
+
+        String[] friendList = (String[]) receive();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Friend list:\n");
+
+        for (String username : friendList) {
+            stringBuilder.append(username).append("\n");
+        }
+
+        printMessage(stringBuilder.toString());
+    }
+
+    private void addFriends() throws IOException, ClassNotFoundException {
+        List<String> usernames = new ArrayList<>();
+
+        while (true) {
+            String username = readLine();
+
+            if (username.equals("done")) {
+                break;
+            }
+
+            usernames.add(username);
+        }
+
+        send(userInstance);
+        String[] usernamesList = usernames.toArray(new String[0]);
+        send(usernamesList);
+
+        String errorMessage = (String) receive();
+        printMessage(errorMessage);
+    }
+
+    private boolean userIsLogged() {
+        return userInstance != null;
     }
 
     private void login() throws IOException, ClassNotFoundException {

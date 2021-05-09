@@ -7,7 +7,6 @@ import java.sql.Statement;
 public class DatabaseStatement {
 
     public static DatabaseStatement instance = null;
-    public static Statement statement = null;
     public static String errorMessage = "";
 
     private DatabaseStatement() {}
@@ -20,33 +19,16 @@ public class DatabaseStatement {
         return instance;
     }
 
-    public Statement getStatement(Connection databaseConnection) {
+    public Statement createStatement(Connection databaseConnection) throws SQLException {
         if (databaseConnection == null) {
             return null;
         }
 
-        if (statement == null) {
-            try {
-                statement = databaseConnection.createStatement();
-            } catch (SQLException throwables) {
-                errorMessage = ErrorMessage.DATABASE_STATEMENT_ERROR;
-                throwables.printStackTrace();
-            }
-        }
-        return statement;
+        return databaseConnection.createStatement();
     }
 
     public void showError() {
         System.out.println(errorMessage);
     }
 
-    public void close() {
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-    }
 }
