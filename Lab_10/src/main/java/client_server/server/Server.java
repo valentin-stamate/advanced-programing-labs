@@ -11,6 +11,7 @@ public class Server implements Runnable {
 
     public static String DOMAIN_NAME = "localhost";
     public static int PORT = 80;
+    private final ServerData serverData = new ServerData();
 
     public void startServer() {
         Thread thread = new Thread(this);
@@ -26,7 +27,7 @@ public class Server implements Runnable {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
 
-                new ClientHandler(clientSocket, serverSocket);
+                new ClientHandler(clientSocket, serverSocket, serverData);
             }
 
         } catch (SocketException e) {

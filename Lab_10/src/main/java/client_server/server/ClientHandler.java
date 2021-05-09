@@ -6,7 +6,6 @@ import client_server.database.dao.FriendShipDao;
 import client_server.database.dao.UserDao;
 import client_server.database.models.User;
 import client_server.util.Color;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,8 +19,9 @@ public class ClientHandler implements Runnable, MessageStreamer {
     private final ObjectInputStream inputStream;
     private final UserDao userDao;
     private final FriendShipDao friendShipDao;
+    private final ServerData serverData;
 
-    public ClientHandler(Socket socket, ServerSocket serverSocket) throws IOException {
+    public ClientHandler(Socket socket, ServerSocket serverSocket, ServerData serverData) throws IOException {
         this.serverSocket = serverSocket;
         this.socket = socket;
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -29,6 +29,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
         this.inputStream = new ObjectInputStream(socket.getInputStream());
         this.userDao =  new UserDao();
         this.friendShipDao = new FriendShipDao();
+        this.serverData = serverData;
 
         startHandler();
     }
@@ -41,6 +42,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
     @Override
     public void run() {
         printMessage("Client connecting with server");
+        serverData.increaseConnections();
 
         try {
 
@@ -70,8 +72,20 @@ public class ClientHandler implements Runnable, MessageStreamer {
 
             closeAll();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            printMessage("Client disconnected");
+//            e.printStackTrace();
         }
+
+        serverData.decreaseConnections();
+
+        if (serverData.getNumberOfConnections() == 0) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private void showFriends() throws IOException, ClassNotFoundException {

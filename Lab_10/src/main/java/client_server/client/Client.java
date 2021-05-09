@@ -19,18 +19,25 @@ public class Client implements Runnable, MessageStreamer {
     private final ObjectOutputStream outputStream;
     private final ObjectInputStream inputStream;
     private User userInstance = null;
+    private final Scanner scanner;
+    private final ClientTimeout clientTimeout;
 
     public Client() throws IOException {
         this.socket = new Socket(Server.DOMAIN_NAME, Server.PORT);
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.outputStream.flush();
         this.inputStream = new ObjectInputStream(socket.getInputStream());
+        this.scanner = new Scanner(System.in);
+        this.clientTimeout = new ClientTimeout(socket, scanner, inputStream, outputStream);
 
         startClient();
     }
 
     public void startClient() {
         Thread thread = new Thread(this);
+        thread.start();
+
+        thread = new Thread(clientTimeout);
         thread.start();
     }
 
@@ -41,6 +48,8 @@ public class Client implements Runnable, MessageStreamer {
             while (true) {
 
                 String command = readLine();
+
+                clientTimeout.resetTimeOut();
 
                 send(command);
 
@@ -72,7 +81,7 @@ public class Client implements Runnable, MessageStreamer {
 
             closeAll();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -149,7 +158,6 @@ public class Client implements Runnable, MessageStreamer {
     }
 
     private String readLine() {
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
