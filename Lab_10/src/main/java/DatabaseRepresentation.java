@@ -15,7 +15,7 @@ import java.util.*;
 public class DatabaseRepresentation {
     private final static String TEMPLATE_FOLDER_PATH = "template/";
     private final static String TEMPLATE_IN = "connection_representation.ftl";
-    private final static String TEMPLATE_OUT = "index.html";
+    private final static String TEMPLATE_OUT = "public/index.html";
 
     Map<String, Object> data;
 
@@ -97,5 +97,22 @@ public class DatabaseRepresentation {
         exporter.exportGraph(hrefGraph, writer);
 
         return writer.toString();
+    }
+
+    public void deploy() {
+        try {
+            Process process = Runtime.getRuntime().exec("cmd.exe /c firebase deploy");
+            printResults(process);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void printResults(Process process) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
     }
 }

@@ -4,7 +4,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class TestUnit {
@@ -33,16 +35,8 @@ public class TestUnit {
         databaseRepresentation.init();
 
         databaseRepresentation.export();
+        databaseRepresentation.deploy();
 
-    }
-
-    @Test
-    public void commandRunner() {
-        try {
-            Runtime.getRuntime().exec("mkdir skad");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
