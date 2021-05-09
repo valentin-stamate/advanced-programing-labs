@@ -35,6 +35,26 @@ public class UserDao extends UserRepository {
         return friendList;
     }
 
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
+
+        String sql = "SELECT * FROM users";
+
+        ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
+
+        try {
+            while (resultSet.next()) {
+                User user = new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+                users.add(user);
+            }
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+
+        return users;
+    }
+
     public void addFriends(User userA, String[] usernames) {
         UserDao user = new UserDao();
         FriendShipDao friendShipDao = new FriendShipDao();
