@@ -65,7 +65,10 @@ public class Client implements Runnable, MessageStreamer {
                     register();
                 } else if (command.equals(Command.LOGIN)) {
                     login();
-                } else if (command.equals(Command.ADD_FRIENDS)) {
+                } else if (command.equals(Command.SHOW_USERS)) {
+                    showUsers();
+                }
+                else if (command.equals(Command.ADD_FRIENDS)) {
                     if (userIsLogged()) {
                         addFriends();
                         continue;
@@ -96,6 +99,16 @@ public class Client implements Runnable, MessageStreamer {
             closeAll();
         } catch (IOException | ClassNotFoundException e) {
 //            e.printStackTrace();
+        }
+    }
+
+    private void showUsers() throws IOException, ClassNotFoundException {
+        String[] users = (String[]) receive();
+
+        printMessage("Existing users:");
+
+        for (String user : users) {
+            System.out.println(user);
         }
     }
 

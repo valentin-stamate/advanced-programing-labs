@@ -63,6 +63,8 @@ public class ClientHandler implements Runnable, MessageStreamer {
                     register();
                 } else if (command.equals(Command.LOGIN)) {
                     login();
+                } else if (command.equals(Command.SHOW_USERS)) {
+                    sendUsers();
                 } else if (command.equals(Command.ADD_FRIENDS)) {
                     addFriends();
                 } else if (command.equals(Command.SHOW_FRIENDS)) {
@@ -93,6 +95,19 @@ public class ClientHandler implements Runnable, MessageStreamer {
             }
         }
 
+    }
+
+    private void sendUsers() throws IOException {
+        UserDao userDao = new UserDao();
+        List<User> userList = userDao.getAll();
+
+        String[] users = new String[userList.size()];
+
+        for (int i = 0; i < userList.size(); i++) {
+            users[i] = userList.get(i).getUsername();
+        }
+
+        send(users);
     }
 
     private void readMessages() throws IOException, ClassNotFoundException {

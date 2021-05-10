@@ -9,5 +9,6 @@ public abstract class Command {
     public static final String SHOW_FRIENDS = "show friends";
     public static final String SEND_MESSAGE = "send message";
     public static final String READ_MESSAGES = "read messages";
+    public static final String SHOW_USERS = "show users";
 
 }
