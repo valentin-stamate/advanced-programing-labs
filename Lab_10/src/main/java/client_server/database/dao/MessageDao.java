@@ -15,7 +15,7 @@ public class MessageDao extends MessageRepository {
     public List<MessageRepresentation> getUserMessages(User user) {
         List<MessageRepresentation> userMessages = new ArrayList<>();
 
-        String sql = "SELECT uf.username, m.message FROM messages m JOIN users uf on m.user_from = uf.id JOIN users ut ON ut.id = m.user_";
+        String sql = String.format("SELECT uf.username, m.message, m.time_created FROM messages m JOIN users uf on m.user_from = uf.id JOIN users ut ON ut.id = m.user_ AND m.user_ = %d", user.getId());
 
         ResultSet resultSet = DatabaseRunner.getInstance().getSqlResult(sql);
 

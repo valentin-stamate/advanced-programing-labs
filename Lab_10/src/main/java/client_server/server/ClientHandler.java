@@ -80,7 +80,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
             closeAll();
         } catch (IOException | ClassNotFoundException e) {
             printMessage("Client disconnected");
-//            e.printStackTrace();
+            e.printStackTrace();
         }
 
         serverData.decreaseConnections();
@@ -102,10 +102,11 @@ public class ClientHandler implements Runnable, MessageStreamer {
 
         List<MessageRepresentation> messages = messageDao.getUserMessages(user);
 
-        MessageRepresentation[] messagesRaw = new MessageRepresentation[messages.size()];
+        String[] messagesRaw = new String[messages.size()];
 
         for (int i = 0; i < messages.size(); i++) {
-            messagesRaw[i] = messages.get(i);
+            MessageRepresentation message = messages.get(i);
+            messagesRaw[i] = String.format(" %10s -> %25s | %16s", message.getUserFrom(), message.getMessage(), message.getTimestamp().toString());
         }
 
         send(messagesRaw);
@@ -122,7 +123,7 @@ public class ClientHandler implements Runnable, MessageStreamer {
         User userFrom = userDao.findByUsername(usernameFrom);
         User userTo = userDao.findByUsername(usernameTo);
 
-        Message message = new Message(userFrom.getId(), userTo.getId(), userMessage);
+        Message message = new Message(userTo.getId(), userFrom.getId(), userMessage);
 
         MessageDao messageDao = new MessageDao();
         messageDao.save(message);

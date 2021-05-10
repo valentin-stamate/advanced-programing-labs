@@ -7,7 +7,7 @@ public class MainClassClient {
         try {
             new Client();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Client error: Server may not be connected");
         }
     }
 

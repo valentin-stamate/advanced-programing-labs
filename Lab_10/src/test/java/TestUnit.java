@@ -1,12 +1,6 @@
 import client_server.database.dao.UserDao;
 import client_server.database.models.User;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
 public class TestUnit {

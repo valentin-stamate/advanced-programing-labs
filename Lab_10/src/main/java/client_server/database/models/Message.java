@@ -1,9 +1,10 @@
 package client_server.database.models;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
     private int id;
     private int user;
     private int userFrom;

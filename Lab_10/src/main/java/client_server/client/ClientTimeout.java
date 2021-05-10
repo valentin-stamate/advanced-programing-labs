@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ClientTimeout implements Runnable {
 
-    private int timeOut = 40;
+    private int timeOut = 120;
     private final Socket clientSocket;
     private final Scanner scanner;
     private final InputStream inputStream;
@@ -22,7 +22,7 @@ public class ClientTimeout implements Runnable {
     }
 
     public void resetTimeOut() {
-        timeOut = 40;
+        timeOut = 120;
     }
 
     @Override

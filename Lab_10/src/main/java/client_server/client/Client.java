@@ -47,6 +47,8 @@ public class Client implements Runnable, MessageStreamer {
 
             while (true) {
 
+                printMessage("");
+
                 String command = readLine();
 
                 clientTimeout.resetTimeOut();
@@ -98,17 +100,20 @@ public class Client implements Runnable, MessageStreamer {
     }
 
     private void readMessages() throws IOException, ClassNotFoundException {
+        printMessage("Your message list:");
         send(userInstance);
 
-        MessageRepresentation[] messages = (MessageRepresentation[]) receive();
+        String[] messages = (String[]) receive();
 
-        for (MessageRepresentation message : messages) {
-            System.out.printf("    %s -> %s | %s", message.getUserFrom(), message.getMessage(), message.getTimestamp().toString());
+        for (String message : messages) {
+            System.out.println(message);
         }
     }
 
     private void sendMessage() throws IOException {
+        printMessage("Send message to:");
         String userTo = readLine();
+        printMessage("Message:");
         String message = readLine();
 
         send(userInstance.getUsername());
@@ -117,21 +122,22 @@ public class Client implements Runnable, MessageStreamer {
     }
 
     private void showFriends() throws IOException, ClassNotFoundException {
+        printMessage("Below is your friend list");
         send(userInstance);
 
         String[] friendList = (String[]) receive();
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Friend list:\n");
 
         for (String username : friendList) {
-            stringBuilder.append(username).append("\n");
+            stringBuilder.append(" -> ").append(username).append("\n");
         }
 
         printMessage(stringBuilder.toString());
     }
 
     private void addFriends() throws IOException, ClassNotFoundException {
+        printMessage("Enter the usernames of you desired friends. To stop the process enter 'done'");
         List<String> usernames = new ArrayList<>();
 
         while (true) {
