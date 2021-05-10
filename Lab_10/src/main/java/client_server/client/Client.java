@@ -53,6 +53,11 @@ public class Client implements Runnable, MessageStreamer {
 
                 clientTimeout.resetTimeOut();
 
+                if (command.equals(Command.HELP)) {
+                    showHelp();
+                    continue;
+                }
+
                 send(command);
 
                 if (command.equals(Command.STOP)) {
@@ -100,6 +105,21 @@ public class Client implements Runnable, MessageStreamer {
         } catch (IOException | ClassNotFoundException e) {
 //            e.printStackTrace();
         }
+    }
+
+    private void showHelp() {
+        printMessage("You can use the following commands:");
+
+        System.out.printf("%-20s %s\n", Command.REGISTER, Command.INFO_REGISTER);
+        System.out.printf("%-20s %s\n", Command.LOGIN, Command.INFO_LOGIN);
+        System.out.printf("%-20s %s\n", Command.ADD_FRIENDS, Command.INFO_ADD_FRIENDS);
+        System.out.printf("%-20s %s\n", Command.SEND_MESSAGE, Command.INFO_SEND_MESSAGE);
+        System.out.printf("%-20s %s\n", Command.READ_MESSAGES, Command.INFO_READ_MESSAGES);
+        System.out.printf("%-20s %s\n", Command.SHOW_USERS, Command.INFO_SHOW_USERS);
+        System.out.printf("%-20s %s\n", Command.CLIENT_DISCONNECT, Command.INFO_CLIENT_DISCONNECT);
+        System.out.printf("%-20s %s\n", Command.STOP, Command.INFO_STOP);
+        System.out.printf("%-20s %s\n", Command.HELP, Command.INFO_HELP);
+
     }
 
     private void showUsers() throws IOException, ClassNotFoundException {
