@@ -3,9 +3,7 @@ package com.perosal.lab_11.person;
 import com.perosal.lab_11.auth.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,6 +22,7 @@ public class PersonService {
 
         for (PersonModel personModel : personModels) {
             personModel.setPassword("");
+            personModel.getFriends().clear();
         }
 
         return personRepository.findAll();
@@ -74,7 +73,10 @@ public class PersonService {
         }
 
         personModel.addFriend(friend);
+        friend.addFriend(personModel);
+
         personRepository.save(personModel);
+        personRepository.save(friend);
     }
 
     public List<PersonModel> getMostConnected(int limit, boolean descending) {

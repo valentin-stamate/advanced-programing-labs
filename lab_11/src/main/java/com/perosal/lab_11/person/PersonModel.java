@@ -21,7 +21,7 @@ public class PersonModel implements Mappable {
     @Column
     private String password;
 
-    @OneToMany
+    @ManyToMany
     private final List<PersonModel> friends = new ArrayList<>();
 
     public PersonModel(String username, String password) {
