@@ -60,4 +60,17 @@ public class PersonService {
     public void deletePerson(PersonModel personModel) {
         personRepository.delete(personModel);
     }
+
+    public void addFriend(PersonModel personModel, PersonModel friend) {
+        List<PersonModel> personModels = personModel.getFriends();
+
+        for (PersonModel person : personModels) {
+            if (person.getUsername().equals(friend.getUsername())) {
+                return;
+            }
+        }
+
+        personModel.addFriend(friend);
+        personRepository.save(personModel);
+    }
 }

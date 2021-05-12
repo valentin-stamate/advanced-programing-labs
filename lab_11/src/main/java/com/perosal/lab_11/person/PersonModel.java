@@ -4,7 +4,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.perosal.lab_11.auth.Mappable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -18,6 +20,9 @@ public class PersonModel implements Mappable {
     private String username;
     @Column
     private String password;
+
+    @OneToMany
+    private final List<PersonModel> friends = new ArrayList<>();
 
     public PersonModel(String username, String password) {
         this.username = username;
@@ -54,6 +59,21 @@ public class PersonModel implements Mappable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<PersonModel> getFriends() {
+        return friends;
+    }
+
+    public boolean addFriend(PersonModel personModel) {
+        for (PersonModel person : friends) {
+            if (person.username.equals(personModel.getUsername())) {
+                return false;
+            }
+        }
+
+        friends.add(personModel);
+        return true;
     }
 
     @Override

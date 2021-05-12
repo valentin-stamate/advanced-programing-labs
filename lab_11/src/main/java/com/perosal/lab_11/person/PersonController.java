@@ -41,7 +41,7 @@ public class PersonController {
         return new ResponseEntity<>(personService.getAllPersons(), HttpStatus.OK);
     }
 
-    @PostMapping("persons")
+    @PostMapping("person")
     public ResponseEntity<Object> addPerson(@RequestBody PersonModel personModel) {
 
         personModel.setPassword(Encryption.encrypt(personModel.getPassword()));
@@ -53,7 +53,7 @@ public class PersonController {
         return new ResponseEntity<>(new APIError("User already exists"), HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("persons")
+    @PutMapping("person")
     public ResponseEntity<Object> modifyPerson(@RequestHeader(name = "Authorization") String token, @RequestBody PersonModel personModelJSON) {
         PersonModel personModel = getPersonModelFromToken(token);
 
@@ -72,7 +72,7 @@ public class PersonController {
         return new ResponseEntity<>(new APISuccess("User updated"), HttpStatus.OK);
     }
 
-    @DeleteMapping("persons")
+    @DeleteMapping("person")
     public ResponseEntity<Object> deletePerson(@RequestHeader(name = "Authorization") String token, @RequestParam String username) {
         PersonModel personModel = getPersonModelFromToken(token);
 
@@ -87,6 +87,40 @@ public class PersonController {
         personService.deletePerson(personModel);
 
         return new ResponseEntity<>(new APISuccess("User deleted successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("person/friends")
+    public ResponseEntity<Object> getFriends(@RequestHeader(name = "Authorization") String token) {
+        PersonModel personModel = getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new APIError("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(personModel.getFriends(), HttpStatus.OK);
+    }
+
+    @PostMapping("person/friend")
+    public ResponseEntity<Object> addFriend(@RequestHeader(name = "Authorization") String token, @RequestParam String username) {
+        PersonModel personModel = getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new APIError("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        if (username.equals(personModel.getUsername())) {
+            return new ResponseEntity<>(new APIError("You can't add yourself"), HttpStatus.OK);
+        }
+
+        PersonModel friend = personService.getByUsername(username);
+
+        if (friend == null) {
+            return new ResponseEntity<>(new APIError("The user you want to add does't exist"), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        personService.addFriend(personModel, friend);
+
+        return new ResponseEntity<>(new APISuccess("Friend added"), HttpStatus.OK);
     }
 
     private PersonModel getPersonModelFromToken(String token) {
