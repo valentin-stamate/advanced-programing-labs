@@ -21,8 +21,10 @@ public class InitialConfig {
             personRepository.save(userC);
 
             userA.addFriend(userB);
+            userB.addFriend(userC);
 
             personRepository.save(userA);
+            personRepository.save(userB);
         };
     }
 

@@ -4,6 +4,9 @@ import com.perosal.lab_11.auth.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -72,5 +75,35 @@ public class PersonService {
 
         personModel.addFriend(friend);
         personRepository.save(personModel);
+    }
+
+    public List<PersonModel> getMostConnected(int limit, boolean descending) {
+        List<PersonModel> personModels = getAllPersons();
+
+        personModels.sort(new PersonComparator());
+
+        List<PersonModel> sortedPersonList = new ArrayList<>();
+
+        if (descending) {
+            for (int i = personModels.size() - 1; i >= 0 && limit > 0; i--, limit--) {
+                sortedPersonList.add(personModels.get(i));
+            }
+
+            return sortedPersonList;
+        }
+
+        for (int i = 0; i < personModels.size() && limit > 0; i++, limit--) {
+            sortedPersonList.add(personModels.get(i));
+        }
+
+        return sortedPersonList;
+    }
+}
+
+class PersonComparator implements Comparator<PersonModel> {
+
+    @Override
+    public int compare(PersonModel personA, PersonModel personB) {
+        return personB.getFriends().size() - personA.getFriends().size();
     }
 }

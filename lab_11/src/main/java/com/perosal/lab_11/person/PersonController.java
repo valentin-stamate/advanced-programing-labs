@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class PersonController {
 
@@ -121,6 +123,11 @@ public class PersonController {
         personService.addFriend(personModel, friend);
 
         return new ResponseEntity<>(new APISuccess("Friend added"), HttpStatus.OK);
+    }
+
+    @GetMapping("person/top_connected")
+    public ResponseEntity<Object> getTopConnected(@RequestParam("limit") int limit) {
+        return new ResponseEntity<>(personService.getMostConnected(Math.abs(limit), limit < 0), HttpStatus.OK);
     }
 
     private PersonModel getPersonModelFromToken(String token) {
