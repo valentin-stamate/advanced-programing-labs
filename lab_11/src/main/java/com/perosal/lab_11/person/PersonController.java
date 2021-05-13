@@ -2,6 +2,10 @@ package com.perosal.lab_11.person;
 
 import com.perosal.lab_11.auth.Encryption;
 import com.perosal.lab_11.auth.JwtUtil;
+import com.perosal.lab_11.legacy.database.dao.FriendShipDao;
+import com.perosal.lab_11.legacy.database.dao.PersonDao;
+import com.perosal.lab_11.legacy.database.models.Friendship;
+import com.perosal.lab_11.legacy.database.models.Person;
 import com.perosal.lab_11.message.MessageModel;
 import com.perosal.lab_11.request.ResponseSuccess;
 import com.perosal.lab_11.request.ResponseError;
@@ -38,7 +42,7 @@ public class PersonController {
         return new ResponseEntity<>(JwtUtil.encode(personModel), HttpStatus.OK);
     }
 
-    @GetMapping("persons")
+    @GetMapping("/persons")
     public ResponseEntity<Object> getPersons() {
 
         List<PersonModel> persons = personService.getAllPersons();
@@ -52,7 +56,7 @@ public class PersonController {
         return new ResponseEntity<>(persons, HttpStatus.OK);
     }
 
-    @PostMapping("person")
+    @PostMapping("/person")
     public ResponseEntity<Object> addPerson(@RequestBody PersonModel personModel) {
 
         personModel.setPassword(Encryption.encrypt(personModel.getPassword()));
@@ -64,7 +68,7 @@ public class PersonController {
         return new ResponseEntity<>(new ResponseSuccess("User already exists"), HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("person")
+    @PutMapping("/person")
     public ResponseEntity<Object> modifyPerson(@RequestHeader(name = "Authorization") String token, @RequestBody PersonModel personModelJSON) {
         PersonModel personModel = personService.getPersonModelFromToken(token);
 
@@ -83,16 +87,12 @@ public class PersonController {
         return new ResponseEntity<>(new ResponseError("User updated"), HttpStatus.OK);
     }
 
-    @DeleteMapping("person")
-    public ResponseEntity<Object> deletePerson(@RequestHeader(name = "Authorization") String token, @RequestParam String username) {
+    @DeleteMapping("/person")
+    public ResponseEntity<Object> deletePerson(@RequestHeader(name = "Authorization") String token) {
         PersonModel personModel = personService.getPersonModelFromToken(token);
 
         if (personModel == null) {
             return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
-        }
-
-        if (!username.equals(personModel.getUsername())) {
-            return new ResponseEntity<>(new ResponseSuccess("You can't delete other users"), HttpStatus.NOT_ACCEPTABLE);
         }
 
         personService.deletePerson(personModel);
@@ -100,7 +100,7 @@ public class PersonController {
         return new ResponseEntity<>(new ResponseError("User deleted successfully"), HttpStatus.OK);
     }
 
-    @GetMapping("person/friends")
+    @GetMapping("/person/friends")
     public ResponseEntity<Object> getFriends(@RequestHeader(name = "Authorization") String token) {
         PersonModel personModel = personService.getPersonModelFromToken(token);
 
@@ -111,7 +111,7 @@ public class PersonController {
         return new ResponseEntity<>(personModel.getFriends(), HttpStatus.OK);
     }
 
-    @PostMapping("person/friend")
+    @PostMapping("/person/friend")
     public ResponseEntity<Object> addFriend(@RequestHeader(name = "Authorization") String token, @RequestParam String username) {
         PersonModel personModel = personService.getPersonModelFromToken(token);
 
@@ -126,7 +126,7 @@ public class PersonController {
         PersonModel friend = personService.getByUsername(username);
 
         if (friend == null) {
-            return new ResponseEntity<>(new ResponseSuccess("The user you want to add does't exist"), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(new ResponseSuccess("The user you want to add doesn't exist"), HttpStatus.NOT_ACCEPTABLE);
         }
 
         personService.addFriend(personModel, friend);
@@ -134,9 +134,135 @@ public class PersonController {
         return new ResponseEntity<>(new ResponseError("Friend added"), HttpStatus.OK);
     }
 
-    @GetMapping("person/top_connected")
+    @GetMapping("/person/top_connected")
     public ResponseEntity<Object> getTopConnected(@RequestParam("limit") int limit) {
         return new ResponseEntity<>(personService.getMostConnected(Math.abs(limit), limit < 0), HttpStatus.OK);
+    }
+
+    /* LEGACY ENDPOINTS */
+
+    @GetMapping("/legacy/persons")
+    public ResponseEntity<Object> legacyGetPersons() {
+        PersonDao personDao = new PersonDao();
+
+        List<Person> persons = personDao.getAll();
+
+        for (Person person : persons) {
+            person.setPassword("");
+        }
+
+        return new ResponseEntity<>(persons, HttpStatus.OK);
+    }
+
+    @GetMapping("/legacy/login")
+    public ResponseEntity<Object> legacyLogin(@RequestBody Person person) {
+        PersonDao personDao = new PersonDao();
+
+        if (personDao.findByUsername(person.getUsername()) == null) {
+            return new ResponseEntity<>(new ResponseSuccess("User doesn't exist"), HttpStatus.BAD_REQUEST);
+        }
+
+        PersonModel personModel = new PersonModel(person.getUsername(), person.getPassword());
+
+        if (!personService.verifyPerson(personModel)) {
+            return new ResponseEntity<>(new ResponseSuccess("Invalid password"), HttpStatus.BAD_REQUEST);
+        }
+
+        person = personDao.findByUsername(person.getUsername());
+
+        return new ResponseEntity<>(JwtUtil.encode(personModel), HttpStatus.OK);
+    }
+
+    @PostMapping("/legacy/person")
+    public ResponseEntity<Object> legacyAddPerson(@RequestBody Person person) {
+        PersonDao personDao = new PersonDao();
+
+        person.setPassword(Encryption.encrypt(person.getPassword()));
+
+        if (personDao.save(person)) {
+            return new ResponseEntity<>(new ResponseError("User inserted successfully"), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new ResponseSuccess("User already exists"), HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/legacy/person")
+    public ResponseEntity<Object> legacyModifyPerson(@RequestHeader(name = "Authorization") String token, @RequestBody Person personModelJSON) {
+        PersonDao personDao = new PersonDao();
+        PersonModel personModel = personService.getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        Person person = new Person(personModel.getId(), personModel.getUsername(), personModel.getPassword());
+
+        person.setUsername(personModelJSON.getUsername());
+
+        String newPassword = Encryption.encrypt(personModelJSON.getPassword());
+        personModel.setPassword(newPassword);
+
+        personDao.updatePerson(person, person.getId());
+
+        return new ResponseEntity<>(new ResponseError("User updated"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/legacy/person")
+    public ResponseEntity<Object> legacyDeletePerson(@RequestHeader(name = "Authorization") String token) {
+        PersonDao personDao = new PersonDao();
+        PersonModel personModel = personService.getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        Person person = new Person(personModel.getId(), personModel.getUsername(), personModel.getPassword());
+
+        personDao.delete(person);
+
+        return new ResponseEntity<>(new ResponseError("User deleted successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("/legacy/person/friends")
+    public ResponseEntity<Object> legacyGetFriends(@RequestHeader(name = "Authorization") String token) {
+        PersonDao personDao = new PersonDao();
+        PersonModel personModel = personService.getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        Person person = new Person(personModel.getId(), personModel.getUsername(), personModel.getPassword());
+
+        return new ResponseEntity<>(personDao.getFriends(person), HttpStatus.OK);
+    }
+
+    @PostMapping("/legacy/person/friend")
+    public ResponseEntity<Object> legacyAddFriend(@RequestHeader(name = "Authorization") String token, @RequestParam String username) {
+        PersonDao personDao = new PersonDao();
+        FriendShipDao friendShipDao = new FriendShipDao();
+
+        PersonModel personModel = personService.getPersonModelFromToken(token);
+
+        if (personModel == null) {
+            return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
+        }
+
+        if (username.equals(personModel.getUsername())) {
+            return new ResponseEntity<>(new ResponseSuccess("You can't add yourself"), HttpStatus.OK);
+        }
+
+        Person person = personDao.findByUsername(personModel.getUsername());
+        Person friend = personDao.findByUsername(username);
+
+        if (friend == null) {
+            return new ResponseEntity<>(new ResponseSuccess("The user you want to add doesn't exist"), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        Friendship friendship = new Friendship(person.getId(), friend.getId());
+        friendShipDao.save(friendship);
+
+        return new ResponseEntity<>(new ResponseError("Friend added"), HttpStatus.OK);
     }
 
 }

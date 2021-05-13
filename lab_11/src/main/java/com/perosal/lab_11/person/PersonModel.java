@@ -22,7 +22,7 @@ public class PersonModel implements Mappable {
     @Column
     private String password;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     private final List<PersonModel> friends = new ArrayList<>();
 
     @OneToMany
