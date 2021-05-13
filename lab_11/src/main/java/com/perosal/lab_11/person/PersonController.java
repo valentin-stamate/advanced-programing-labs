@@ -112,7 +112,14 @@ public class PersonController {
             return new ResponseEntity<>(new ResponseSuccess("Invalid token"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(personModel.getFriends(), HttpStatus.OK);
+        List<PersonModel> friends = personModel.getFriends();
+
+        for (PersonModel friend : friends) {
+            friend.getFriends().clear();
+            friend.setPassword("");
+        }
+
+        return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
     @PostMapping("/person/friend")
