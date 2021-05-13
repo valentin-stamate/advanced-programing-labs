@@ -19,7 +19,7 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public List<PersonModel> getAllPersons() {
+    public List<PersonModel> getAllPeople() {
         List<PersonModel> personModels = personRepository.findAll();
 
         for (PersonModel personModel : personModels) {
@@ -82,7 +82,7 @@ public class PersonService {
     }
 
     public List<PersonModel> getMostConnected(int limit, boolean descending) {
-        List<PersonModel> personModels = getAllPersons();
+        List<PersonModel> personModels = getAllPeople();
 
         personModels.sort(new PersonComparator());
 

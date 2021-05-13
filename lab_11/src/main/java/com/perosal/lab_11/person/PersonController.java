@@ -46,18 +46,18 @@ public class PersonController {
         return new ResponseEntity<>(JwtUtil.encode(personModel), HttpStatus.OK);
     }
 
-    @GetMapping("/persons")
-    public ResponseEntity<Object> getPersons() {
+    @GetMapping("/people")
+    public ResponseEntity<Object> getPeople() {
 
-        List<PersonModel> persons = personService.getAllPersons();
+        List<PersonModel> people = personService.getAllPeople();
 
-        for (PersonModel personModel : persons) {
+        for (PersonModel personModel : people) {
             personModel.getMessages().clear();
             personModel.getFriends().clear();
             personModel.setPassword("");
         }
 
-        return new ResponseEntity<>(persons, HttpStatus.OK);
+        return new ResponseEntity<>(people, HttpStatus.OK);
     }
 
     @PostMapping("/person")
@@ -144,24 +144,24 @@ public class PersonController {
     }
 
     @GetMapping("/important_users")
-    public ResponseEntity<Object> getImportantPersons() {
-        List<PersonModel> persons = personService.getAllPersons();
+    public ResponseEntity<Object> getImportantPeople() {
+        List<PersonModel> people = personService.getAllPeople();
 
         /* CREATION OF THE GRAPH */
         Map<PersonModel, Integer> personToVertex = new HashMap<>();
 
-        for (int i = 0; i < persons.size(); i++) {
-            personToVertex.put(persons.get(i), i);
+        for (int i = 0; i < people.size(); i++) {
+            personToVertex.put(people.get(i), i);
         }
 
-        final int n = persons.size();
+        final int n = people.size();
 
         List<Integer>[] Graph = new List[n];
 
         for (int i = 0; i < n; i++) {
             Graph[i] = new ArrayList<>();
 
-            List<PersonModel> friends = persons.get(i).getFriends();
+            List<PersonModel> friends = people.get(i).getFriends();
 
             for (PersonModel friend : friends) {
                 int j = personToVertex.get(friend);
@@ -171,7 +171,7 @@ public class PersonController {
 
         }
 
-        List<PersonModel> importantPersons = new ArrayList<>();
+        List<PersonModel> importantPeople = new ArrayList<>();
 
         /* THE ALGORITHM */
         /* INSPIRED FROM https://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/ */
@@ -196,26 +196,26 @@ public class PersonController {
 
         for (int i = 0; i < n; i++) {
             if (artPoints[i]) {
-                importantPersons.add(persons.get(i));
+                importantPeople.add(people.get(i));
             }
         }
 
-        return new ResponseEntity<>(importantPersons, HttpStatus.OK);
+        return new ResponseEntity<>(importantPeople, HttpStatus.OK);
     }
 
     /* LEGACY ENDPOINTS */
 
-    @GetMapping("/legacy/persons")
-    public ResponseEntity<Object> legacyGetPersons() {
+    @GetMapping("/legacy/people")
+    public ResponseEntity<Object> legacyGetPeople() {
         PersonDao personDao = new PersonDao();
 
-        List<Person> persons = personDao.getAll();
+        List<Person> people = personDao.getAll();
 
-        for (Person person : persons) {
+        for (Person person : people) {
             person.setPassword("");
         }
 
-        return new ResponseEntity<>(persons, HttpStatus.OK);
+        return new ResponseEntity<>(people, HttpStatus.OK);
     }
 
     @GetMapping("/legacy/login")
