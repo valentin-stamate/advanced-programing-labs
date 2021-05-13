@@ -5,10 +5,7 @@ import com.perosal.lab_11.auth.Mappable;
 import com.perosal.lab_11.message.MessageModel;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "persons")
@@ -113,7 +110,7 @@ public class PersonModel implements Mappable {
 
         PersonModel that = (PersonModel) o;
 
-        return username != null ? username.equals(that.username) : that.username == null;
+        return Objects.equals(username, that.username);
     }
 
     @Override

@@ -168,7 +168,10 @@ public class PersonController {
         for (int i = 0; i < n; i++) {
             Graph[i] = new ArrayList<>();
 
-            List<PersonModel> friends = people.get(i).getFriends();
+            String username = people.get(i).getUsername();
+
+            PersonModel personModelFriend = personService.getByUsername(username);
+            List<PersonModel> friends = personModelFriend.getFriends();
 
             for (PersonModel friend : friends) {
                 int j = personToVertex.get(friend);
@@ -176,6 +179,16 @@ public class PersonController {
                 Graph[i].add(j);
             }
 
+        }
+
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%d -> ", i);
+
+            for (int j : Graph[i]) {
+                System.out.print(j + " ");
+            }
+
+            System.out.println("");
         }
 
         List<PersonModel> importantPeople = new ArrayList<>();
