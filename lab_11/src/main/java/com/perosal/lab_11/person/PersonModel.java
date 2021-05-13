@@ -2,6 +2,7 @@ package com.perosal.lab_11.person;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.perosal.lab_11.auth.Mappable;
+import com.perosal.lab_11.message.MessageModel;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class PersonModel implements Mappable {
 
     @ManyToMany
     private final List<PersonModel> friends = new ArrayList<>();
+
+    @OneToMany
+    private final List<MessageModel> messages = new ArrayList<>();
 
     public PersonModel(String username, String password) {
         this.username = username;
@@ -63,6 +67,14 @@ public class PersonModel implements Mappable {
 
     public List<PersonModel> getFriends() {
         return friends;
+    }
+
+    public List<MessageModel> getMessages() {
+        return messages;
+    }
+
+    public void addMessage(MessageModel messageModel) {
+        messages.add(messageModel);
     }
 
     public boolean addFriend(PersonModel personModel) {

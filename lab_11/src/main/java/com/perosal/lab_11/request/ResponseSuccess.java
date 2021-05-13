@@ -1,9 +1,9 @@
 package com.perosal.lab_11.request;
 
-public class APISuccess {
+public class ResponseSuccess {
     public final String message;
 
-    public APISuccess(String message) {
+    public ResponseSuccess(String message) {
         this.message = message;
     }
 }

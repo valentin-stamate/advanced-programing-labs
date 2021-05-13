@@ -1,6 +1,8 @@
 package com.perosal.lab_11.person;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.perosal.lab_11.auth.Encryption;
+import com.perosal.lab_11.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -99,6 +101,21 @@ public class PersonService {
         }
 
         return sortedPersonList;
+    }
+
+    public PersonModel getPersonModelFromToken(String token) {
+        DecodedJWT decodedJWT = JwtUtil.decode(token);
+
+        if (decodedJWT == null) {
+            return null;
+        }
+
+        PersonModel personModel = new PersonModel();
+        personModel.setObjectFromClaims(decodedJWT);
+
+        personModel = getByUsername(personModel.getUsername());
+
+        return personModel;
     }
 }
 

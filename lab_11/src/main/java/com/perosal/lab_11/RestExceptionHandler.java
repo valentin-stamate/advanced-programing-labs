@@ -1,6 +1,6 @@
 package com.perosal.lab_11;
 
-import com.perosal.lab_11.request.APIError;
+import com.perosal.lab_11.request.ResponseSuccess;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,8 +12,13 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = { IOException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public APIError badRequest(Exception e) {
-        return new APIError("Sad request");
+    public ResponseSuccess badRequest(Exception e) {
+        return new ResponseSuccess("Sad request");
     }
 
+    @ExceptionHandler(value = { NullPointerException.class })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseSuccess nullPointer(NullPointerException e) {
+        return new ResponseSuccess("Life cannot be null");
+    }
 }
