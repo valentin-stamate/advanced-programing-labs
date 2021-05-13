@@ -106,4 +106,18 @@ public class PersonModel implements Mappable {
         username = decodedJWT.getClaim("username").asString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PersonModel that = (PersonModel) o;
+
+        return username != null ? username.equals(that.username) : that.username == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
+    }
 }

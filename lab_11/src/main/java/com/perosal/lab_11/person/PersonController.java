@@ -1,12 +1,13 @@
 package com.perosal.lab_11.person;
 
+import com.perosal.lab_11.util.Time;
+import com.perosal.lab_11.util.Util;
 import com.perosal.lab_11.auth.Encryption;
 import com.perosal.lab_11.auth.JwtUtil;
 import com.perosal.lab_11.legacy.database.dao.FriendShipDao;
 import com.perosal.lab_11.legacy.database.dao.PersonDao;
 import com.perosal.lab_11.legacy.database.models.Friendship;
 import com.perosal.lab_11.legacy.database.models.Person;
-import com.perosal.lab_11.message.MessageModel;
 import com.perosal.lab_11.request.ResponseSuccess;
 import com.perosal.lab_11.request.ResponseError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class PersonController {
@@ -137,6 +141,66 @@ public class PersonController {
     @GetMapping("/person/top_connected")
     public ResponseEntity<Object> getTopConnected(@RequestParam("limit") int limit) {
         return new ResponseEntity<>(personService.getMostConnected(Math.abs(limit), limit < 0), HttpStatus.OK);
+    }
+
+    @GetMapping("/important_users")
+    public ResponseEntity<Object> getImportantPersons() {
+        List<PersonModel> persons = personService.getAllPersons();
+
+        /* CREATION OF THE GRAPH */
+        Map<PersonModel, Integer> personToVertex = new HashMap<>();
+
+        for (int i = 0; i < persons.size(); i++) {
+            personToVertex.put(persons.get(i), i);
+        }
+
+        final int n = persons.size();
+
+        List<Integer>[] Graph = new List[n];
+
+        for (int i = 0; i < n; i++) {
+            Graph[i] = new ArrayList<>();
+
+            List<PersonModel> friends = persons.get(i).getFriends();
+
+            for (PersonModel friend : friends) {
+                int j = personToVertex.get(friend);
+
+                Graph[i].add(j);
+            }
+
+        }
+
+        List<PersonModel> importantPersons = new ArrayList<>();
+
+        /* THE ALGORITHM */
+        /* INSPIRED FROM https://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/ */
+
+        boolean[] visited = new boolean[n];
+        int[] discovered = new int[n];
+        int[] low = new int[n];
+        int[] parent = new int[n];
+        boolean[] artPoints = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            parent[i] = -1;
+        }
+
+        Time time = new Time();
+
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                Util.dfsUtil(i, Graph, visited, discovered, low, parent, artPoints, time);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (artPoints[i]) {
+                importantPersons.add(persons.get(i));
+            }
+        }
+
+        return new ResponseEntity<>(importantPersons, HttpStatus.OK);
     }
 
     /* LEGACY ENDPOINTS */
@@ -266,3 +330,5 @@ public class PersonController {
     }
 
 }
+
+
