@@ -209,6 +209,10 @@ public class PersonController {
             }
         }
 
+        for (Person person : importantPeople) {
+            person.setPassword("");
+        }
+
         return new ResponseEntity<>(importantPeople, HttpStatus.OK);
     }
 

@@ -18,7 +18,7 @@ public class InitialConfig {
         return args -> {
             PersonModel userA = new PersonModel("ValentinSt", Encryption.encrypt("123456789"));
             PersonModel userB = new PersonModel("Andrei", Encryption.encrypt("987654321"));
-            PersonModel userC = new PersonModel("Ana", Encryption.encrypt("123456789"));
+            PersonModel userC = new PersonModel("Vlad", Encryption.encrypt("123456789"));
 
             personService.savePerson(userA);
             personService.savePerson(userB);

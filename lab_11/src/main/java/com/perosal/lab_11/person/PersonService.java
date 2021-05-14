@@ -58,9 +58,6 @@ public class PersonService {
     }
 
     public PersonModel getByUsername(String username) {
-        System.out.print("-" + username);
-        System.out.println( personRepository.findByUsername(username).getFriends().size());
-
         return personRepository.findByUsername(username);
     }
 
@@ -86,6 +83,11 @@ public class PersonService {
 
     public List<PersonModel> getMostConnected(int limit, boolean descending) {
         List<PersonModel> personModels = getAllPeople();
+
+        for (PersonModel personModel : personModels) {
+            personModel.getMessages().clear();
+            personModel.getFriends().clear();
+        }
 
         personModels.sort(new PersonComparator());
 
