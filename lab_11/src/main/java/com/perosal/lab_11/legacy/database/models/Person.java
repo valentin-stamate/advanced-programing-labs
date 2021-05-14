@@ -81,4 +81,19 @@ public class Person implements Serializable, Mappable {
         id = decodedJWT.getClaim("id").asLong();
         username = decodedJWT.getClaim("username").asString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        return username.equals(person.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
 }

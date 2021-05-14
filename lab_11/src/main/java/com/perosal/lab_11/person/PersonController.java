@@ -152,10 +152,11 @@ public class PersonController {
 
     @GetMapping("/important_users")
     public ResponseEntity<Object> getImportantPeople() {
-        List<PersonModel> people = personService.getAllPeople();
+        PersonDao personDao = new PersonDao();
+        List<Person> people = personDao.getAll();
 
         /* CREATION OF THE GRAPH */
-        Map<PersonModel, Integer> personToVertex = new HashMap<>();
+        Map<Person, Integer> personToVertex = new HashMap<>();
 
         for (int i = 0; i < people.size(); i++) {
             personToVertex.put(people.get(i), i);
@@ -168,12 +169,10 @@ public class PersonController {
         for (int i = 0; i < n; i++) {
             Graph[i] = new ArrayList<>();
 
-            String username = people.get(i).getUsername();
+            Person person = people.get(i);
+            List<Person> friends = personDao.getFriends(person);
 
-            PersonModel personModelFriend = personService.getByUsername(username);
-            List<PersonModel> friends = personModelFriend.getFriends();
-
-            for (PersonModel friend : friends) {
+            for (Person friend : friends) {
                 int j = personToVertex.get(friend);
 
                 Graph[i].add(j);
@@ -181,17 +180,7 @@ public class PersonController {
 
         }
 
-        for (int i = 0; i < n; i++) {
-            System.out.printf("%d -> ", i);
-
-            for (int j : Graph[i]) {
-                System.out.print(j + " ");
-            }
-
-            System.out.println("");
-        }
-
-        List<PersonModel> importantPeople = new ArrayList<>();
+        List<Person> importantPeople = new ArrayList<>();
 
         /* THE ALGORITHM */
         /* INSPIRED FROM https://www.geeksforgeeks.org/articulation-points-or-cut-vertices-in-a-graph/ */

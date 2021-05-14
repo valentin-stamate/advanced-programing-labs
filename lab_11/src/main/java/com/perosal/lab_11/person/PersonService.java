@@ -57,7 +57,6 @@ public class PersonService {
         return password.equals(personDB.getPassword());
     }
 
-    /* No Words, try 'send message' endpoint and 'important people'  */
     public PersonModel getByUsername(String username) {
         System.out.print("-" + username);
         System.out.println( personRepository.findByUsername(username).getFriends().size());
