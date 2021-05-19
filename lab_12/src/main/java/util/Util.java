@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Util {
 
+    /* TAKEN FROM Lab 10 */
     public static void getFiles(File folder, List<String> fileList) {
         File[] files = folder.listFiles();
 
@@ -19,7 +20,7 @@ public class Util {
             }
 
             if (file.getPath().endsWith(".class") || file.getPath().endsWith(".jar")) {
-                fileList.add(file.getPath());
+                fileList.add(file.getName());
             }
         }
     }
