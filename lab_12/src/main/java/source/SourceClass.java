@@ -1,8 +1,9 @@
 package source;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-public class SourceClass {
+public  class SourceClass {
 
     public static void test(String... args) {
         System.out.println("Hello world!");

@@ -1,20 +1,18 @@
 import loader.Loader;
-import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 public class MainClass {
 
     public static void main(String... args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
-        String file = "source.SourceClass";
-        String path = "C:\\Users\\Valentin\\Desktop\\Sem.ll\\Programare Avansata\\Laborator\\Laborator-Java\\lab_12\\build\\classes\\java\\main\\source";
+        String file = "source.SourceClassOne";
+        String path = "C:\\Users\\Valentin\\Desktop";
 
         Loader loader = new Loader();
+        loader.addPath(path);
 
         Class<?> clazz = loader.loadClass(file);
 

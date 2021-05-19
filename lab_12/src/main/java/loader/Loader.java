@@ -10,7 +10,7 @@ public class Loader extends URLClassLoader {
         super(new URL[0], ClassLoader.getSystemClassLoader());
     }
 
-    public void addFile(String path) {
+    public void addPath(String path) {
         File file = new File(path);
         if (file.exists()) {
             URL url = null;
