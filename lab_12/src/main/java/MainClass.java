@@ -1,18 +1,29 @@
 import loader.Loader;
+import util.Util;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainClass {
 
+    private final static String PATH = "C:\\Users\\Valentin\\Desktop";
+
     public static void main(String... args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+
+//        compulsory();
+        optional();
+    }
+
+    private static void compulsory() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String file = "source.SourceClassOne";
-        String path = "C:\\Users\\Valentin\\Desktop";
 
         Loader loader = new Loader();
-        loader.addPath(path);
+        loader.addPath(PATH);
 
         Class<?> clazz = loader.loadClass(file);
 
@@ -54,8 +65,16 @@ public class MainClass {
 
             System.out.println("");
         }
-
-
     }
 
+    private static void optional() {
+        File folder = new File(PATH + "\\source");
+        List<String> files = new ArrayList<>();
+        Util.getFiles(folder, files);
+
+        for (String file : files) {
+            System.out.println(file);
+        }
+
+    }
 }
