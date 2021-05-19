@@ -42,7 +42,6 @@ public class Loader extends URLClassLoader {
 
         Method[] methods = clazz.getMethods();
 
-        System.out.println("\nMethods with output for @Test annotated function: ");
         for (Method method : methods) {
             System.out.printf("%10s -> ", method.getName());
 
@@ -51,7 +50,7 @@ public class Loader extends URLClassLoader {
             StringBuilder stringBuilder = new StringBuilder();
 
             for (Class<?> parameter : parameters) {
-                stringBuilder.append(parameter.getName()).append(" ");
+                stringBuilder.append(parameter.getSimpleName()).append(" ");
             }
             System.out.printf("| %20s |", stringBuilder);
 
@@ -76,4 +75,43 @@ public class Loader extends URLClassLoader {
             System.out.println("");
         }
     }
+
+    public void showClassInfoRequired(final String fileName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+        Class<?> clazz = loadClass(fileName);
+
+        if (!Modifier.isPublic(clazz.getModifiers())) {
+            return;
+        }
+
+        Method[] methods = clazz.getMethods();
+
+        for (Method method : methods) {
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation.toString().equals("@org.junit.jupiter.api.Test()")) {
+
+                    Class<?>[] parameters = method.getParameterTypes();
+
+                    Object[] params = new Object[parameters.length];
+
+                    for (int i = 0; i < params.length; i++) {
+                        Class<?> parameter = parameters[i];
+
+                        if (parameter.getSimpleName().equals("int")) {
+                            params[i] = 6;
+                        } else if (parameter.getSimpleName().equals("String")) {
+                            params[i] = "Hello!";
+                        } else {
+                            params[i] = new Object();
+                        }
+                    }
+
+                    Object obj = clazz.getConstructor().newInstance();
+
+                    method.invoke(obj, params);
+
+                }
+            }
+        }
+    }
+
 }
