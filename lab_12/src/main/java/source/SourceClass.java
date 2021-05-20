@@ -15,12 +15,22 @@ public class SourceClass {
     @Test
     public int prod(int a, int b, int c) {
         int result = a * b * c;
-        System.out.println(result);
         return a * b * c;
     }
 
     @Test
     public static String getString() {
+        int i = 0;
+
+        while (i < 100) {
+            i++;
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         return "Hello world!";
     }
 

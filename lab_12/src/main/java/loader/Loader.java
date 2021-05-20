@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Date;
 
 public class Loader extends URLClassLoader {
     public Loader() {
@@ -107,7 +108,19 @@ public class Loader extends URLClassLoader {
 
                     Object obj = clazz.getConstructor().newInstance();
 
-                    method.invoke(obj, params);
+                    long executionTime = new Date().getTime();
+                    Object ret = method.invoke(obj, params);
+                    executionTime = new Date().getTime() - executionTime;
+
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    for (Class<?> parameter : parameters) {
+                        stringBuilder.append(parameter.getSimpleName()).append(" ");
+                    }
+
+                    System.out.printf("| %15s | %20s | %20s | %20d |\n", method.getName(), stringBuilder, ret.toString(), executionTime);
+
+
 
                 }
             }

@@ -27,6 +27,7 @@ public class MainClass {
         }
 
         System.out.println("\nPublic classes with @Test annotation");
+        System.out.printf("| %15s | %20s | %20s | %20s |\n", "Method name", "Signature", "Return", "Execution Time");
         for (String file : files) {
             String rawFile = file.substring(0, file.lastIndexOf("."));
             loader.showClassInfoRequired(PACKAGE_NAME + "." + rawFile);
