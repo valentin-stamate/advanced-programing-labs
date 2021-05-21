@@ -18,7 +18,7 @@ public class MainClass {
 
         File folder = new File(PATH + "\\" + PACKAGE_NAME);
         List<String> files = new ArrayList<>();
-        Util.getFiles(folder, files);
+        Util.getFiles(folder, files, ".*([.class]|[.jar])");
 
         System.out.println("\nMethods with output for @Test annotated function: ");
         for (String file : files) {
@@ -32,6 +32,23 @@ public class MainClass {
             String rawFile = file.substring(0, file.lastIndexOf("."));
             loader.showClassInfoRequired(PACKAGE_NAME + "." + rawFile);
         }
+
+        /* COMPILING JAVA FILES */
+
+        System.out.println("\nCompiling Java Files\n");
+
+        List<String> javaFiles = new ArrayList<>();
+        String javaPath = "C:\\Users\\Valentin\\Desktop\\Sem.ll\\Programare Avansata\\Laborator\\Laborator-Java\\lab_12\\src\\main\\resources\\java_files";
+
+        File javaFolder = new File(javaPath);
+
+        Util.getFiles(javaFolder, javaFiles, ".*[.java]");
+
+        for (String path : javaFiles) {
+            String command = String.format("javac %s", "\"" + javaPath + "\\" +path + "\"");
+            Util.runCommand(command);
+        }
+
     }
 
 
